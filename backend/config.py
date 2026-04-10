@@ -15,7 +15,10 @@ if DATABASE_URL.startswith("postgres://"):
 
 # Create engine
 if DATABASE_URL and ("postgresql" in DATABASE_URL or "postgres" in DATABASE_URL):
-    engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
+    connect_args = {}
+    if "render.com" in DATABASE_URL:
+        connect_args["sslmode"] = "require"
+    engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True, connect_args=connect_args)
 else:
     # Local SQLite
     engine = create_engine(
