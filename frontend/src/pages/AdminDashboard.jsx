@@ -656,12 +656,47 @@ export default function AdminDashboard({ user }) {
                             </table>
                         )}
 
+                        {/* Formula Reference */}
                         <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#F9FAFB', borderRadius: '12px' }}>
                             <h4 style={{ margin: '0 0 0.5rem', color: 'var(--deep-forest)' }}>Formula Reference</h4>
-                            <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.7 }}>
+                            <p style={{ margin: '0 0 1rem', fontSize: '0.9rem', opacity: 0.7 }}>
                                 <strong>Sum Insured</strong> = Area × Rate per unit (Acre or Cent)<br />
                                 <strong>Claim Amount</strong> = Sum Insured × (Damage % / 100)
                             </p>
+                        </div>
+
+                        {/* Price List Table from PDF */}
+                        <div style={{ marginTop: '1.5rem', padding: '1.5rem', background: '#E8F5E9', borderRadius: '12px', border: '1px solid #A5D6A7' }}>
+                            <h4 style={{ margin: '0 0 1rem', color: 'var(--deep-forest)' }}>Claim Amount Reference Table (Rate: ₹50,000/Acre)</h4>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
+                                    <thead>
+                                        <tr style={{ background: 'var(--paddy-green)', color: 'white' }}>
+                                            <th style={{ padding: '10px', textAlign: 'left' }}>Area</th>
+                                            <th style={{ padding: '10px', textAlign: 'right' }}>Sum Insured</th>
+                                            <th style={{ padding: '10px', textAlign: 'right' }}>5% (Healthy)</th>
+                                            <th style={{ padding: '10px', textAlign: 'right' }}>20% (Mild)</th>
+                                            <th style={{ padding: '10px', textAlign: 'right' }}>40% (Moderate)</th>
+                                            <th style={{ padding: '10px', textAlign: 'right' }}>65% (Severe)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {[35, 50, 40, 80].map(area => {
+                                            const sum = area * 50000;
+                                            return (
+                                                <tr key={area} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                                                    <td style={{ padding: '10px', fontWeight: 600 }}>{area} Acre</td>
+                                                    <td style={{ padding: '10px', textAlign: 'right' }}>₹{sum.toLocaleString()}</td>
+                                                    <td style={{ padding: '10px', textAlign: 'right', color: '#4CAF50', fontWeight: 600 }}>₹{(sum * 0.05).toLocaleString()}</td>
+                                                    <td style={{ padding: '10px', textAlign: 'right', color: '#FF9800', fontWeight: 600 }}>₹{(sum * 0.20).toLocaleString()}</td>
+                                                    <td style={{ padding: '10px', textAlign: 'right', color: '#F57C00', fontWeight: 600 }}>₹{(sum * 0.40).toLocaleString()}</td>
+                                                    <td style={{ padding: '10px', textAlign: 'right', color: '#C62828', fontWeight: 600 }}>₹{(sum * 0.65).toLocaleString()}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

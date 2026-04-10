@@ -19,14 +19,14 @@ INSERT INTO land_records (user_id, survey_number, area, unit, crop_type, irrigat
 
 -- Insert Crops Master
 INSERT INTO crops (crop_name, crop_code, season, base_rate) VALUES
-('Paddy (Rice)', 'PADDY_KL', 'kharif', 45000),
+('Paddy (Rice)', 'PADDY_KL', 'kharif', 50000),
 ('Coconut', 'COCO_KL', 'summer', 60000),
 ('Rubber', 'RUBBER_KL', 'kharif', 80000),
 ('Banana', 'BANANA_KL', 'summer', 55000);
 
 -- Insert Insurance Rates
 INSERT INTO insurance_rates (crop_type, rate_per_acre, threshold_damage) VALUES
-('Paddy (Rice)', 45000, 33.0),
+('Paddy (Rice)', 50000, 33.0),
 ('Coconut', 60000, 33.0),
 ('Rubber', 80000, 33.0),
 ('Banana', 55000, 33.0);

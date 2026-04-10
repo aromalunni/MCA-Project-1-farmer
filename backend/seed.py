@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from config import SessionLocal, engine, Base
-from models import User
+from models import User, InsuranceRate, Crop
 from services.auth import auth_service
 
 # Create tables if not exist
@@ -56,6 +56,40 @@ def seed_users():
         lakshmi_user.full_name = "Lakshmi"
         lakshmi_user.is_active = True
     
+    # 3. Create Insurance Rate (₹50,000/Acre, ₹500/Cent as per PDF)
+    existing_rate = db.query(InsuranceRate).filter(InsuranceRate.crop_type == "Default").first()
+    if not existing_rate:
+        print("Creating default insurance rate...")
+        rate = InsuranceRate(
+            crop_type="Default",
+            rate_per_acre=50000.0,
+            rate_per_cent=500.0,
+            threshold_damage=33.0
+        )
+        db.add(rate)
+    else:
+        print("Updating default insurance rate to ₹50,000/Acre...")
+        existing_rate.rate_per_acre = 50000.0
+        existing_rate.rate_per_cent = 500.0
+
+    # Also update Paddy rate if exists
+    paddy_rate = db.query(InsuranceRate).filter(InsuranceRate.crop_type == "Paddy (Rice)").first()
+    if paddy_rate:
+        paddy_rate.rate_per_acre = 50000.0
+        paddy_rate.rate_per_cent = 500.0
+
+    # 4. Create default Crop entry
+    existing_crop = db.query(Crop).first()
+    if not existing_crop:
+        print("Creating default crop...")
+        crop = Crop(
+            crop_name="Paddy",
+            crop_code="PADDY",
+            season="kharif",
+            base_rate=50000.0
+        )
+        db.add(crop)
+
     db.commit()
     db.close()
     print("Seeding completed successfully!")
