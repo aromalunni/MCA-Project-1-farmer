@@ -1,36 +1,82 @@
 // frontend/src/pages/Lands.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { landService } from '../services/api';
 import { Map, Plus, MapPin, Ruler, Sprout, Eye, EyeOff } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
-// Fix leaflet default marker icon
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
-const greenIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-});
 
 export default function Lands({ user }) {
     const [lands, setLands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showMap, setShowMap] = useState(true);
+    const mapRef = useRef(null);
+    const mapInstanceRef = useRef(null);
     const [newLand, setNewLand] = useState({
         survey_number: '', area: '', unit: 'Acre', crop_type: 'Paddy',
         irrigation_type: 'Canal', latitude: '', longitude: ''
     });
 
     useEffect(() => { fetchLands(); }, []);
+
+    // Initialize/update map when lands change or showMap toggles
+    useEffect(() => {
+        if (!showMap || !mapRef.current) return;
+
+        const validLands = lands.filter(l => l.latitude && l.longitude);
+        if (validLands.length === 0) return;
+
+        // Destroy previous map instance
+        if (mapInstanceRef.current) {
+            mapInstanceRef.current.remove();
+            mapInstanceRef.current = null;
+        }
+
+        const center = [
+            validLands.reduce((s, l) => s + l.latitude, 0) / validLands.length,
+            validLands.reduce((s, l) => s + l.longitude, 0) / validLands.length
+        ];
+
+        const map = L.map(mapRef.current).setView(center, 13);
+        mapInstanceRef.current = map;
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const greenIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        validLands.forEach(land => {
+            L.marker([land.latitude, land.longitude], { icon: greenIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <div style="min-width:160px">
+                        <strong style="color:#00843D;font-size:1rem">Survey #${land.survey_number}</strong>
+                        <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+                        <p style="margin:4px 0;font-size:0.85rem">Crop: <strong>${land.crop_type}</strong></p>
+                        <p style="margin:4px 0;font-size:0.85rem">Area: <strong>${land.area} ${land.unit}</strong></p>
+                        <p style="margin:4px 0;font-size:0.8rem;color:#888">GPS: ${land.latitude?.toFixed(4)}, ${land.longitude?.toFixed(4)}</p>
+                    </div>
+                `);
+        });
+
+        // Fit bounds to show all markers
+        if (validLands.length > 1) {
+            const bounds = L.latLngBounds(validLands.map(l => [l.latitude, l.longitude]));
+            map.fitBounds(bounds, { padding: [30, 30] });
+        }
+
+        return () => {
+            if (mapInstanceRef.current) {
+                mapInstanceRef.current.remove();
+                mapInstanceRef.current = null;
+            }
+        };
+    }, [lands, showMap]);
 
     const fetchLands = async () => {
         try { const res = await landService.getMyLands(); setLands(res.data); }
@@ -48,11 +94,7 @@ export default function Lands({ user }) {
         } catch (err) { alert('Failed to add land record'); }
     };
 
-    // Calculate map center from lands
     const validLands = lands.filter(l => l.latitude && l.longitude);
-    const mapCenter = validLands.length > 0
-        ? [validLands.reduce((s, l) => s + l.latitude, 0) / validLands.length, validLands.reduce((s, l) => s + l.longitude, 0) / validLands.length]
-        : [9.9312, 76.2673]; // Default: Kerala center
 
     return (
         <div className="dashboard-container animate-fade-in">
@@ -77,33 +119,11 @@ export default function Lands({ user }) {
             {/* MAP VIEW */}
             {showMap && validLands.length > 0 && (
                 <div className="glass-card" style={{ padding: '0', overflow: 'hidden', marginBottom: '1.5rem', borderRadius: '16px' }}>
-                    <div style={{ padding: '1rem 1.5rem', background: 'var(--paddy-green)', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ padding: '0.8rem 1.2rem', background: 'var(--paddy-green)', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <MapPin size={18} /> <strong>Farm Land Map View</strong>
                         <span style={{ marginLeft: 'auto', fontSize: '0.8rem', opacity: 0.8 }}>{validLands.length} plot(s) mapped</span>
                     </div>
-                    <div style={{ height: '400px' }}>
-                        <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }} scrollWheelZoom={true}>
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            {validLands.map(land => (
-                                <Marker key={land.id} position={[land.latitude, land.longitude]} icon={greenIcon}>
-                                    <Popup>
-                                        <div style={{ minWidth: '180px' }}>
-                                            <strong style={{ color: 'var(--paddy-green)', fontSize: '1rem' }}>Survey #{land.survey_number}</strong>
-                                            <hr style={{ margin: '6px 0', border: 'none', borderTop: '1px solid #eee' }} />
-                                            <p style={{ margin: '4px 0', fontSize: '0.85rem' }}>Crop: <strong>{land.crop_type}</strong></p>
-                                            <p style={{ margin: '4px 0', fontSize: '0.85rem' }}>Area: <strong>{land.area} {land.unit}</strong></p>
-                                            <p style={{ margin: '4px 0', fontSize: '0.8rem', color: '#888' }}>
-                                                GPS: {land.latitude?.toFixed(4)}, {land.longitude?.toFixed(4)}
-                                            </p>
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            ))}
-                        </MapContainer>
-                    </div>
+                    <div ref={mapRef} style={{ height: '380px', width: '100%' }}></div>
                 </div>
             )}
 
