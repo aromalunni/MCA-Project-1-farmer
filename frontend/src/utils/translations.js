@@ -169,6 +169,7 @@ export const translations = {
         editProfile: "Edit Profile",
         saveChanges: "Save Changes",
         phone: "Phone",
+        rateSettings: "Rate Settings",
         // Kerala Stats
         keralaAgriIntel: "Kerala Agriculture Intelligence",
         keralaAgriDesc: "Real-time monsoon tracking, spice markets, and crop analytics",
@@ -353,6 +354,7 @@ export const translations = {
         editProfile: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
         saveChanges: "മാറ്റങ്ങൾ സേവ് ചെയ്യുക",
         phone: "ഫോൺ",
+        rateSettings: "നിരക്ക് ക്രമീകരണം",
         // Kerala Stats
         keralaAgriIntel: "കേരള കാർഷിക ഇന്റലിജൻസ്",
         keralaAgriDesc: "തത്സമയ മൺസൂൺ ട്രാക്കിംഗ്, സുഗന്ധവ്യഞ്ജന വിപണി, വിള വിശകലനം",

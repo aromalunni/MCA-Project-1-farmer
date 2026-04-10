@@ -464,3 +464,10 @@
 7:35:21 PM [vite] hmr update /src/pages/KeralaStats.jsx
 7:35:30 PM [vite] hmr update /src/pages/KeralaStats.jsx
 7:35:40 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:38:06 PM [vite] hmr update /src/components/Navbar.jsx
+7:38:24 PM [vite] hmr update /src/context/LanguageContext.jsx
+7:38:24 PM [vite] hmr invalidate /src/context/LanguageContext.jsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+7:38:24 PM [vite] page reload src/context/LanguageContext.jsx
+7:38:33 PM [vite] hmr update /src/context/LanguageContext.jsx
+7:38:33 PM [vite] hmr invalidate /src/context/LanguageContext.jsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+7:38:33 PM [vite] page reload src/context/LanguageContext.jsx

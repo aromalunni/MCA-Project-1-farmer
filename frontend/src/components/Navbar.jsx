@@ -45,11 +45,11 @@ export default function Navbar({ user, onLogout }) {
 
   // Admin navigation - uses onClick to set tab via URL
   const adminItems = [
-    { label: 'Claims', tab: 'claims', icon: <FileCheck size={18} /> },
-    { label: 'Farmers', tab: 'farmers', icon: <Users size={18} /> },
-    { label: 'Claim History', tab: 'history', icon: <Clock size={18} /> },
-    { label: 'Rate Settings', tab: 'settings', icon: <Settings size={18} /> },
-    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} /> },
+    { label: t('claims'), tab: 'claims', icon: <FileCheck size={18} /> },
+    { label: t('farmers'), tab: 'farmers', icon: <Users size={18} /> },
+    { label: t('claimHistory'), tab: 'history', icon: <Clock size={18} /> },
+    { label: t('rateSettings'), tab: 'settings', icon: <Settings size={18} /> },
+    { label: t('profile'), path: '/profile', icon: <User size={18} /> },
     { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} /> },
   ];
 
