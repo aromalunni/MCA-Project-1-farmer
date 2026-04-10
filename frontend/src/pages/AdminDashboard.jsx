@@ -27,12 +27,13 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../components/Toast';
 
+import { useSearchParams } from 'react-router-dom';
+
 export default function AdminDashboard({ user }) {
     const { t } = useLanguage();
     const toast = useToast();
-    // Read tab from URL query param - update on every render
-    const urlTab = new URLSearchParams(window.location.search).get('tab') || 'claims';
-    const [activeTab, setActiveTab] = useState(urlTab);
+    const [searchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'claims';
     const [claims, setClaims] = useState([]);
     const [farmers, setFarmers] = useState([]);
     const [selectedFarmer, setSelectedFarmer] = useState(null);
@@ -57,12 +58,6 @@ export default function AdminDashboard({ user }) {
     const [editingRate, setEditingRate] = useState(null);
     const [rateForm, setRateForm] = useState({ rate_per_acre: '', rate_per_cent: '' });
     const [rateSaving, setRateSaving] = useState(false);
-
-    // Sync active tab with URL changes
-    useEffect(() => {
-        const tab = new URLSearchParams(window.location.search).get('tab') || 'claims';
-        setActiveTab(tab);
-    });
 
     useEffect(() => {
         fetchData();
