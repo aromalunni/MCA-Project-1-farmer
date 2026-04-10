@@ -14,10 +14,12 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../components/Toast';
 
 export default function Upload({ user }) {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const toast = useToast();
   const [step, setStep] = useState(1);
   const [lands, setLands] = useState([]);
   const [selectedLandId, setSelectedLandId] = useState('');
@@ -129,7 +131,7 @@ export default function Upload({ user }) {
             setFile(null);
             setPreview(null);
             setUploadedImageUrl(null);
-            alert(aiResult.error || 'Invalid image. Please upload a photo of your crop/farmland.');
+            toast.error(aiResult.error || 'Invalid image. Please upload a photo of your crop/farmland.');
           }, 500);
           return;
         }
@@ -180,7 +182,7 @@ export default function Upload({ user }) {
 
     } catch (err) {
       console.error("Upload/Analysis failed", err);
-      alert("Failed to process image. Please try again.");
+      toast.error("Failed to process image. Please try again.");
       setLoading(false);
       setScanning(false);
     }
@@ -188,7 +190,7 @@ export default function Upload({ user }) {
 
   const handleSubmitClaim = async () => {
     if (!claimAmount) {
-      alert("Please enter a claim amount");
+      toast.error("Please enter a claim amount");
       return;
     }
 
@@ -208,7 +210,7 @@ export default function Upload({ user }) {
       await claimService.submitClaim(claimData);
       navigate('/claims');
     } catch (err) {
-      alert('Submission failed: ' + (err.response?.data?.detail || err.message));
+      toast.error('Submission failed: ' + (err.response?.data?.detail || err.message));
     } finally {
       setLoading(false);
     }

@@ -5,11 +5,14 @@ import App from './App.jsx'
 import './index.css'
 
 import { LanguageProvider } from './context/LanguageContext';
+import { ToastProvider } from './components/Toast';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <LanguageProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </LanguageProvider>
   </React.StrictMode>,
 )

@@ -13,7 +13,8 @@ import {
   Info,
   CheckCircle,
   X,
-  Printer
+  Printer,
+  Download
 } from 'lucide-react';
 
 import { useLanguage } from '../context/LanguageContext';
@@ -226,6 +227,11 @@ export default function Claims() {
                   padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px'
                 }}>
                   <Printer size={14} /> Print
+                </button>
+                <button onClick={handlePrint} className="btn-gov" style={{
+                  padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px', background: '#1565C0'
+                }}>
+                  <Download size={14} /> PDF
                 </button>
                 <button onClick={() => setSelectedClaim(null)} style={{
                   background: '#f5f5f5', border: 'none', cursor: 'pointer', padding: '6px',

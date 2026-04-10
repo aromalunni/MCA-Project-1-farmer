@@ -1,6 +1,9 @@
 // frontend/src/pages/AdminDashboard.jsx
 import { useState, useEffect } from 'react';
 import api, { claimService, masterService } from '../services/api';
+import { Pie, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 import {
     Shield,
     Users,
@@ -22,9 +25,11 @@ import {
     X
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useToast } from '../components/Toast';
 
 export default function AdminDashboard({ user }) {
     const { t } = useLanguage();
+    const toast = useToast();
     const [activeTab, setActiveTab] = useState('claims');
     const [claims, setClaims] = useState([]);
     const [farmers, setFarmers] = useState([]);
@@ -87,14 +92,14 @@ export default function AdminDashboard({ user }) {
                     claim_amount: approveAmount ? parseFloat(approveAmount) : undefined,
                     district_admin_notes: adminNotes || 'Approved by admin'
                 });
-                alert('Claim approved successfully!');
+                toast.success('Claim approved successfully!');
             } else if (action === 'reject') {
                 await claimService.approveClaim(claimId, {
                     claim_status: 'rejected',
                     rejection_reason: rejectReason || 'Rejected by admin',
                     district_admin_notes: adminNotes || 'Rejected'
                 });
-                alert('Claim rejected.');
+                toast.info('Claim rejected.');
             }
             setSelectedClaim(null);
             setApproveAmount('');
@@ -103,7 +108,7 @@ export default function AdminDashboard({ user }) {
             fetchData();
         } catch (err) {
             console.error(err);
-            alert('Action failed: ' + (err.response?.data?.detail || err.message));
+            toast.error('Action failed: ' + (err.response?.data?.detail || err.message));
         }
     };
 
@@ -115,7 +120,7 @@ export default function AdminDashboard({ user }) {
                 setSelectedFarmer(null);
             }
         } catch (err) {
-            alert('Status update failed');
+            toast.error('Status update failed');
         }
     };
 
@@ -149,14 +154,14 @@ export default function AdminDashboard({ user }) {
                 });
             }
 
-            alert('Farmer details and password updated successfully');
+            toast.success('Farmer details updated successfully');
             setIsEditing(false);
             setNewPassword('');
             fetchData();
             setSelectedFarmer(null);
         } catch (err) {
             console.error(err);
-            alert('Failed to update farmer details: ' + (err.response?.data?.detail || err.message));
+            toast.error('Failed to update: ' + (err.response?.data?.detail || err.message));
         }
     };
 
@@ -180,7 +185,7 @@ export default function AdminDashboard({ user }) {
             }
         } catch (err) {
             console.error('Delete error:', err);
-            alert('Failed to delete: ' + (err.response?.data?.detail || err.message));
+            toast.error('Failed to delete: ' + (err.response?.data?.detail || err.message));
             // Revert optimistic update if failed
             fetchData();
         }
@@ -282,6 +287,45 @@ export default function AdminDashboard({ user }) {
             </header>
 
             {renderStats()}
+
+            {/* Charts Row */}
+            {claims.length > 0 && (
+                <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: '2rem' }}>
+                    <div className="glass-card" style={{ padding: '1.5rem' }}>
+                        <h4 style={{ margin: '0 0 1rem', color: 'var(--deep-forest)' }}>Claim Status Distribution</h4>
+                        <div style={{ maxHeight: '220px', display: 'flex', justifyContent: 'center' }}>
+                            <Pie data={{
+                                labels: ['Requested', 'Verified', 'Approved', 'Rejected'],
+                                datasets: [{
+                                    data: [
+                                        claims.filter(c => c.claim_status === 'requested').length,
+                                        claims.filter(c => c.claim_status === 'verified').length,
+                                        claims.filter(c => c.claim_status === 'approved').length,
+                                        claims.filter(c => c.claim_status === 'rejected').length,
+                                    ],
+                                    backgroundColor: ['#FF9800', '#2196F3', '#4CAF50', '#F44336'],
+                                }]
+                            }} options={{ responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }} />
+                        </div>
+                    </div>
+                    <div className="glass-card" style={{ padding: '1.5rem' }}>
+                        <h4 style={{ margin: '0 0 1rem', color: 'var(--deep-forest)' }}>Claims Amount by Type</h4>
+                        <div style={{ maxHeight: '220px' }}>
+                            <Bar data={{
+                                labels: [...new Set(claims.map(c => c.damage_type || 'Other'))],
+                                datasets: [{
+                                    label: 'Total Amount (₹)',
+                                    data: [...new Set(claims.map(c => c.damage_type || 'Other'))].map(type =>
+                                        claims.filter(c => (c.damage_type || 'Other') === type).reduce((s, c) => s + (c.claim_amount || 0), 0)
+                                    ),
+                                    backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726', '#EF5350'],
+                                    borderRadius: 6,
+                                }]
+                            }} options={{ responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }} />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Tabs */}
             <div style={{ display: 'flex', gap: '0', marginBottom: '2rem', borderBottom: '2px solid #eee', overflowX: 'auto' }}>
@@ -475,9 +519,27 @@ export default function AdminDashboard({ user }) {
             {/* ===== CLAIM HISTORY TAB ===== */}
             {activeTab === 'history' && (
                 <div className="animate-fade-in">
-                    <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--deep-forest)' }}>
-                        <Clock size={20} /> All Claim History ({claims.length})
-                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--deep-forest)' }}>
+                            <Clock size={20} /> All Claim History ({claims.length})
+                        </h3>
+                        {claims.length > 0 && (
+                            <button className="btn-gov" style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                                onClick={() => {
+                                    const headers = 'Claim Number,Farmer,Survey,Damage %,Type,Amount,Status,Date\n';
+                                    const rows = claims.map(c =>
+                                        `${c.claim_number},${c.farmer_name},${c.land_survey},${c.damage_percentage}%,${c.damage_type || ''},₹${c.claim_amount},${c.claim_status},${new Date(c.created_at).toLocaleDateString('en-IN')}`
+                                    ).join('\n');
+                                    const blob = new Blob([headers + rows], { type: 'text/csv' });
+                                    const a = document.createElement('a');
+                                    a.href = URL.createObjectURL(blob);
+                                    a.download = `claims_export_${new Date().toISOString().slice(0, 10)}.csv`;
+                                    a.click();
+                                }}>
+                                <Download size={14} /> Export CSV
+                            </button>
+                        )}
+                    </div>
 
                     {claims.length === 0 ? (
                         <div className="glass-card" style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>
@@ -616,9 +678,9 @@ export default function AdminDashboard({ user }) {
                                                                         r.id === rate.id ? { ...r, ...res.data.rate } : r
                                                                     ));
                                                                     setEditingRate(null);
-                                                                    alert('Rate updated successfully!');
+                                                                    toast.success('Rate updated successfully!');
                                                                 } catch (err) {
-                                                                    alert('Failed to update: ' + (err.response?.data?.detail || err.message));
+                                                                    toast.error('Failed to update: ' + (err.response?.data?.detail || err.message));
                                                                 } finally {
                                                                     setRateSaving(false);
                                                                 }
