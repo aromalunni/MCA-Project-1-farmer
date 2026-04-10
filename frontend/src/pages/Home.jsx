@@ -57,10 +57,10 @@ export default function Home({ user }) {
   };
 
   const damageTypes = [
-    { type: 'Flood', icon: <Droplets size={24} />, color: '#1565C0', bg: '#E3F2FD', desc: 'Heavy rainfall, waterlogging, river overflow' },
-    { type: 'Drought', icon: <Sun size={24} />, color: '#E65100', bg: '#FFF3E0', desc: 'Prolonged dry spell, water scarcity' },
-    { type: 'Pest Attack', icon: <Bug size={24} />, color: '#2E7D32', bg: '#E8F5E9', desc: 'Insect infestation, disease outbreak' },
-    { type: 'Storm', icon: <Wind size={24} />, color: '#4527A0', bg: '#EDE7F6', desc: 'Cyclone, heavy wind, hailstorm' }
+    { type: t('flood'), icon: <Droplets size={24} />, color: '#1565C0', bg: '#E3F2FD', desc: t('floodDesc') },
+    { type: t('drought'), icon: <Sun size={24} />, color: '#E65100', bg: '#FFF3E0', desc: t('droughtDesc') },
+    { type: t('pestAttack'), icon: <Bug size={24} />, color: '#2E7D32', bg: '#E8F5E9', desc: t('pestDesc') },
+    { type: t('storm'), icon: <Wind size={24} />, color: '#4527A0', bg: '#EDE7F6', desc: t('stormDesc') }
   ];
 
   return (
@@ -170,7 +170,7 @@ export default function Home({ user }) {
       {rates && (
         <div className="glass-card" style={{ marginTop: '1.5rem' }}>
           <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--deep-forest)' }}>
-            <IndianRupee size={20} /> Insurance Rate - Price List
+            <IndianRupee size={20} /> {t('insuranceRateTitle')}
           </h3>
           <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             {/* Acre Rate Card */}
@@ -184,11 +184,11 @@ export default function Home({ user }) {
                 borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 1rem', fontSize: '1.2rem', fontWeight: 700
               }}>A</div>
-              <p style={{ opacity: 0.6, fontSize: '0.85rem', margin: '0 0 0.5rem', fontWeight: 600 }}>PER ACRE</p>
+              <p style={{ opacity: 0.6, fontSize: '0.85rem', margin: '0 0 0.5rem', fontWeight: 600 }}>{t('perAcre')}</p>
               <h2 style={{ color: 'var(--deep-forest)', margin: '0 0 0.5rem', fontSize: '2rem' }}>
                 ₹{rates.rate_per_acre?.toLocaleString()}
               </h2>
-              <p style={{ opacity: 0.5, fontSize: '0.8rem', margin: 0 }}>Insurance rate per Acre</p>
+              <p style={{ opacity: 0.5, fontSize: '0.8rem', margin: 0 }}>{t('ratePerAcre')}</p>
             </div>
 
             {/* Cent Rate Card */}
@@ -202,17 +202,17 @@ export default function Home({ user }) {
                 borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 1rem', fontSize: '1.2rem', fontWeight: 700
               }}>C</div>
-              <p style={{ opacity: 0.6, fontSize: '0.85rem', margin: '0 0 0.5rem', fontWeight: 600 }}>PER CENT</p>
+              <p style={{ opacity: 0.6, fontSize: '0.85rem', margin: '0 0 0.5rem', fontWeight: 600 }}>{t('perCent')}</p>
               <h2 style={{ color: '#0D47A1', margin: '0 0 0.5rem', fontSize: '2rem' }}>
                 ₹{rates.rate_per_cent?.toLocaleString()}
               </h2>
-              <p style={{ opacity: 0.5, fontSize: '0.8rem', margin: 0 }}>Insurance rate per Cent</p>
+              <p style={{ opacity: 0.5, fontSize: '0.8rem', margin: 0 }}>{t('ratePerCent')}</p>
             </div>
           </div>
 
           {/* Quick Calculation Table */}
           <div style={{ marginTop: '1.5rem', background: '#F9FAFB', borderRadius: '12px', padding: '1.5rem' }}>
-            <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', color: 'var(--deep-forest)' }}>Quick Estimate (Acre)</h4>
+            <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', color: 'var(--deep-forest)' }}>{t('quickEstimate')}</h4>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #e0e0e0' }}>
@@ -252,7 +252,7 @@ export default function Home({ user }) {
       {/* Type of Damage Section */}
       <div className="glass-card" style={{ marginTop: '1.5rem' }}>
         <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--deep-forest)' }}>
-          <AlertTriangle size={20} /> Types of Damage Covered
+          <AlertTriangle size={20} /> {t('damageTypesCovered')}
         </h3>
         <div className="gov-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
           {damageTypes.map(d => (
@@ -277,14 +277,14 @@ export default function Home({ user }) {
       {/* Kerala Farmer Help Section */}
       <div className="glass-card" style={{ marginTop: '1.5rem' }}>
         <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--deep-forest)' }}>
-          <HelpCircle size={20} /> Kerala Farmer Help Center
+          <HelpCircle size={20} /> {t('helpCenter')}
         </h3>
 
         <div className="gov-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
           {/* Emergency Helplines */}
           <div style={{ background: '#FFEBEE', borderRadius: '14px', padding: '1.2rem', border: '1px solid #FFCDD2' }}>
             <h4 style={{ color: '#C62828', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Phone size={18} /> Emergency Helplines
+              <Phone size={18} /> {t('emergencyHelplines')}
             </h4>
             {[
               { name: 'Kisan Call Center', number: '1800-180-1551', note: 'Toll Free 24/7' },
@@ -306,7 +306,7 @@ export default function Home({ user }) {
           {/* Crop Calendar */}
           <div style={{ background: '#E8F5E9', borderRadius: '14px', padding: '1.2rem', border: '1px solid #C8E6C9' }}>
             <h4 style={{ color: '#2E7D32', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calendar size={18} /> Kerala Crop Calendar
+              <Calendar size={18} /> {t('cropCalendar')}
             </h4>
             {[
               { season: 'Virippu (Kharif)', months: 'Jun - Sep', crops: 'Paddy, Banana, Vegetables', color: '#1565C0' },
@@ -327,7 +327,7 @@ export default function Home({ user }) {
           {/* Government Schemes */}
           <div style={{ background: '#E3F2FD', borderRadius: '14px', padding: '1.2rem', border: '1px solid #BBDEFB' }}>
             <h4 style={{ color: '#1565C0', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <IndianRupee size={18} /> Govt Schemes for Farmers
+              <IndianRupee size={18} /> {t('govtSchemes')}
             </h4>
             {[
               { name: 'PMFBY', desc: 'Crop insurance at 2% premium', link: '#' },

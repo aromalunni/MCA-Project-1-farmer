@@ -2,10 +2,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { landService } from '../services/api';
 import { Map, Plus, MapPin, Ruler, Sprout, Eye, EyeOff, Navigation, Search, Loader, X, MapPinned } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 export default function Lands({ user }) {
+    const { t } = useLanguage();
     const [lands, setLands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
@@ -230,17 +232,17 @@ export default function Lands({ user }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 style={{ color: 'var(--paddy-green)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Map size={32} /> My Land Records
+                        <Map size={32} /> {t('myLandRecords')}
                     </h1>
-                    <p style={{ opacity: 0.7 }}>Manage your agricultural plots for insurance claims</p>
+                    <p style={{ opacity: 0.7 }}>{t('manageLands')}</p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <button className="btn-gov" style={{ background: showMap ? 'var(--paddy-green)' : '#eee', color: showMap ? 'white' : '#333' }} onClick={() => setShowMap(!showMap)}>
                         {showMap ? <EyeOff size={16} /> : <Eye size={16} />}
-                        <span style={{ marginLeft: '6px' }}>{showMap ? 'Hide Map' : 'Show Map'}</span>
+                        <span style={{ marginLeft: '6px' }}>{showMap ? t('hideMap') : t('showMap')}</span>
                     </button>
                     <button className="btn-gov" onClick={() => setShowAddForm(true)}>
-                        <Plus size={18} style={{ marginRight: '6px' }} /> Add Land
+                        <Plus size={18} style={{ marginRight: '6px' }} /> {t('addLand')}
                     </button>
                 </div>
             </div>
@@ -249,7 +251,7 @@ export default function Lands({ user }) {
             {showMap && (
                 <div className="glass-card" style={{ padding: '0', overflow: 'hidden', marginBottom: '1.5rem', borderRadius: '16px' }}>
                     <div style={{ padding: '0.8rem 1.2rem', background: 'var(--paddy-green)', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <MapPin size={18} /> <strong>Farm Land Map View</strong>
+                        <MapPin size={18} /> <strong>{t('farmMapView')}</strong>
                         <span style={{ marginLeft: 'auto', fontSize: '0.8rem', opacity: 0.8 }}>{validLands.length} plot(s)</span>
                     </div>
 
@@ -313,7 +315,7 @@ export default function Lands({ user }) {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '20px' }}>
                     <div className="glass-card animate-fade-in" style={{ width: '100%', maxWidth: '600px', background: 'white', padding: '2rem', maxHeight: '90vh', overflow: 'auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h2 style={{ color: 'var(--deep-forest)', fontSize: '1.3rem', margin: 0 }}>Register Plot</h2>
+                            <h2 style={{ color: 'var(--deep-forest)', fontSize: '1.3rem', margin: 0 }}>{t('registerPlot')}</h2>
                             <button onClick={() => setShowAddForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
                         </div>
                         <form onSubmit={handleAddLand}>
@@ -348,15 +350,15 @@ export default function Lands({ user }) {
                                     <button type="button" className="btn-gov" style={{ padding: '4px 12px', fontSize: '0.75rem', background: '#1565C0' }}
                                         onClick={() => getMyLocation('form')} disabled={gpsLoading}>
                                         {gpsLoading ? <Loader className="spin" size={12} /> : <Navigation size={12} />}
-                                        <span style={{ marginLeft: '4px' }}>Use My GPS</span>
+                                        <span style={{ marginLeft: '4px' }}>{t('useMyGps')}</span>
                                     </button>
                                 </div>
 
                                 {/* Place / Manual Toggle */}
                                 <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1.5px solid var(--paddy-green)', marginBottom: '0.8rem' }}>
                                     {[
-                                        { key: 'place', label: 'Search Place' },
-                                        { key: 'manual', label: 'Enter Lat/Lng' }
+                                        { key: 'place', label: t('searchPlace') },
+                                        { key: 'manual', label: t('enterLatLng') }
                                     ].map(opt => (
                                         <button key={opt.key} type="button" onClick={() => setCoordMode(opt.key)} style={{
                                             flex: 1, padding: '6px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.78rem',
@@ -451,7 +453,7 @@ export default function Lands({ user }) {
 
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="button" className="btn-gov" style={{ background: '#eee', color: '#333', flex: 1 }} onClick={() => setShowAddForm(false)}>Cancel</button>
-                                <button type="submit" className="btn-gov" style={{ flex: 1 }}>Register Plot</button>
+                                <button type="submit" className="btn-gov" style={{ flex: 1 }}>{t('registerPlot')}</button>
                             </div>
                         </form>
                     </div>
