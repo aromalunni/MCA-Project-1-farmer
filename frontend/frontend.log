@@ -93,3 +93,8 @@
 5:49:12 PM [vite] hmr update /src/index.css
 5:49:41 PM [vite] page reload index.html
 5:49:53 PM [vite] page reload index.html
+5:57:08 PM [vite] hmr update /src/pages/Lands.jsx
+5:57:09 PM [vite] ✨ new dependencies optimized: react-leaflet, leaflet
+5:57:09 PM [vite] ✨ optimized dependencies changed. reloading
+5:57:46 PM [vite] hmr update /src/pages/Home.jsx
+5:58:12 PM [vite] hmr update /src/pages/Home.jsx

@@ -16,7 +16,11 @@ import {
   Droplets,
   Sun,
   Bug,
-  Wind
+  Wind,
+  Phone,
+  Calendar,
+  HelpCircle,
+  ExternalLink
 } from 'lucide-react';
 
 import { useLanguage } from '../context/LanguageContext';
@@ -267,6 +271,80 @@ export default function Home({ user }) {
               <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>{d.desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Kerala Farmer Help Section */}
+      <div className="glass-card" style={{ marginTop: '1.5rem' }}>
+        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--deep-forest)' }}>
+          <HelpCircle size={20} /> Kerala Farmer Help Center
+        </h3>
+
+        <div className="gov-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+          {/* Emergency Helplines */}
+          <div style={{ background: '#FFEBEE', borderRadius: '14px', padding: '1.2rem', border: '1px solid #FFCDD2' }}>
+            <h4 style={{ color: '#C62828', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Phone size={18} /> Emergency Helplines
+            </h4>
+            {[
+              { name: 'Kisan Call Center', number: '1800-180-1551', note: 'Toll Free 24/7' },
+              { name: 'PMFBY Helpline', number: '1800-200-7710', note: 'Crop Insurance' },
+              { name: 'Kerala Agriculture Dept', number: '0471-2304481', note: 'State Office' },
+              { name: 'Disaster Helpline', number: '1077', note: 'Flood/Landslide' },
+              { name: 'Krishi Bhavan', number: '1800-425-1661', note: 'Local Agriculture' },
+            ].map((h, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: i < 4 ? '1px solid #FFCDD2' : 'none' }}>
+                <div>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: '0.85rem' }}>{h.name}</p>
+                  <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.6 }}>{h.note}</p>
+                </div>
+                <a href={`tel:${h.number}`} style={{ color: '#C62828', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}>{h.number}</a>
+              </div>
+            ))}
+          </div>
+
+          {/* Crop Calendar */}
+          <div style={{ background: '#E8F5E9', borderRadius: '14px', padding: '1.2rem', border: '1px solid #C8E6C9' }}>
+            <h4 style={{ color: '#2E7D32', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Calendar size={18} /> Kerala Crop Calendar
+            </h4>
+            {[
+              { season: 'Virippu (Kharif)', months: 'Jun - Sep', crops: 'Paddy, Banana, Vegetables', color: '#1565C0' },
+              { season: 'Mundakan (Rabi)', months: 'Oct - Feb', crops: 'Paddy, Pulses, Tapioca', color: '#E65100' },
+              { season: 'Puncha (Summer)', months: 'Mar - May', crops: 'Watermelon, Cucumber, Sesame', color: '#F57F17' },
+              { season: 'Perennial', months: 'Year Round', crops: 'Coconut, Rubber, Pepper, Cardamom', color: '#2E7D32' },
+            ].map((s, i) => (
+              <div key={i} style={{ padding: '8px 0', borderBottom: i < 3 ? '1px solid #C8E6C9' : 'none' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: '0.85rem', color: s.color }}>{s.season}</p>
+                  <span style={{ fontSize: '0.75rem', background: 'white', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>{s.months}</span>
+                </div>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', opacity: 0.7 }}>{s.crops}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Government Schemes */}
+          <div style={{ background: '#E3F2FD', borderRadius: '14px', padding: '1.2rem', border: '1px solid #BBDEFB' }}>
+            <h4 style={{ color: '#1565C0', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IndianRupee size={18} /> Govt Schemes for Farmers
+            </h4>
+            {[
+              { name: 'PMFBY', desc: 'Crop insurance at 2% premium', link: '#' },
+              { name: 'PM-KISAN', desc: '₹6,000/year direct transfer', link: '#' },
+              { name: 'KCC (Kisan Credit Card)', desc: 'Low interest farm loans', link: '#' },
+              { name: 'Soil Health Card', desc: 'Free soil testing & recommendation', link: '#' },
+              { name: 'RKVY', desc: 'State agriculture development fund', link: '#' },
+            ].map((s, i) => (
+              <div key={i} style={{ padding: '8px 0', borderBottom: i < 4 ? '1px solid #BBDEFB' : 'none' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: '0.85rem' }}>{s.name}</p>
+                  <ExternalLink size={14} style={{ opacity: 0.4 }} />
+                </div>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', opacity: 0.7 }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
