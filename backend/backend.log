@@ -828,3 +828,8 @@ INFO:     127.0.0.1:56413 - "GET /api/farmer/all?t=1775826056915 HTTP/1.1" 200 O
 INFO:     127.0.0.1:56413 - "GET /api/admin/rates HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56415 - "GET /api/farmer/all?t=1775826056921 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56415 - "GET /api/admin/rates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56474 - "GET /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56473 - "GET /api/claims/all HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56473 - "OPTIONS /api/farmer/all?t=1775826176947 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56474 - "GET /api/farmer/all?t=1775826176947 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56474 - "GET /api/admin/rates HTTP/1.1" 200 OK

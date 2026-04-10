@@ -267,29 +267,10 @@ export default function AdminDashboard({ user }) {
 
     return (
         <div className="dashboard-container">
-            {/* Header */}
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-                <div>
-                    <h1 style={{ color: 'var(--deep-forest)', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.5rem' }}>
-                        <Shield size={28} />
-                        {t('adminDashboard') || 'ADMIN DASHBOARD'}
-                    </h1>
-                    <p style={{ opacity: 0.7, fontSize: '0.9rem' }}>{t('govtKerala')}</p>
-                </div>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <div className="user-badge" style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'white', padding: '8px 16px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                        <div style={{ textAlign: 'right' }}>
-                            <p style={{ fontWeight: '600', fontSize: '0.9rem', margin: 0 }}>{user?.full_name}</p>
-                            <p style={{ fontSize: '0.75rem', opacity: 0.6, margin: 0, textTransform: 'uppercase' }}>{user?.role?.replace('_', ' ')}</p>
-                        </div>
-                        <div style={{ width: '36px', height: '36px', background: '#00843D', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                            {user?.full_name?.charAt(0)}
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {renderStats()}
+            {/* Stats & Charts only on Claims tab */}
+            {activeTab === 'claims' && (
+                <>
+                    {renderStats()}
 
             {/* Charts Row */}
             {claims.length > 0 && (
@@ -328,6 +309,8 @@ export default function AdminDashboard({ user }) {
                         </div>
                     </div>
                 </div>
+            )}
+                </>
             )}
 
             {/* ===== CLAIMS TAB (Pending for Approval) ===== */}

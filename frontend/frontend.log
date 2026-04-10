@@ -148,3 +148,73 @@
 6:28:47 PM [vite] hmr update /src/pages/AdminDashboard.jsx
 6:30:48 PM [vite] hmr update /src/pages/AdminDashboard.jsx
 6:30:56 PM [vite] hmr update /src/pages/AdminDashboard.jsx
+6:32:35 PM [vite] hmr update /src/pages/AdminDashboard.jsx
+6:32:35 PM [vite] Internal server error: /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/src/pages/AdminDashboard.jsx: Expected corresponding JSX closing tag for <>. (982:8)
+
+  980 |                 </div>
+  981 |             )}
+> 982 |         </div>
+      |         ^
+  983 |     );
+  984 | }
+  985 |
+  Plugin: vite:react-babel
+  File: /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/src/pages/AdminDashboard.jsx:982:8
+  980|                  </div>
+  981|              )}
+  982|          </div>
+     |          ^
+  983|      );
+  984|  }
+      at constructor (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:365:19)
+      at JSXParserMixin.raise (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:6599:19)
+      at JSXParserMixin.jsxParseElementAt (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4720:14)
+      at JSXParserMixin.jsxParseElement (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4749:17)
+      at JSXParserMixin.parseExprAtom (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4759:19)
+      at JSXParserMixin.parseExprSubscripts (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11081:23)
+      at JSXParserMixin.parseUpdate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11066:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11046:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10899:61)
+      at JSXParserMixin.parseExprOps (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10904:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10881:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10831:21)
+      at /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10800:39
+      at JSXParserMixin.allowInAnd (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:12426:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10800:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:12493:17)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11675:28)
+      at JSXParserMixin.parseExprAtom (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11331:23)
+      at JSXParserMixin.parseExprAtom (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4764:20)
+      at JSXParserMixin.parseExprSubscripts (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11081:23)
+      at JSXParserMixin.parseUpdate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11066:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11046:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10899:61)
+      at JSXParserMixin.parseExprOpBaseRightExpr (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10986:34)
+      at JSXParserMixin.parseExprOpRightExpr (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10981:21)
+      at JSXParserMixin.parseExprOp (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10947:27)
+      at JSXParserMixin.parseExprOp (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10953:21)
+      at JSXParserMixin.parseExprOps (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10908:17)
+      at JSXParserMixin.parseMaybeConditional (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10881:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10831:21)
+      at JSXParserMixin.parseExpressionBase (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10784:23)
+      at /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10780:39
+      at JSXParserMixin.allowInAnd (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:12426:12)
+      at JSXParserMixin.parseExpression (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10780:17)
+      at JSXParserMixin.jsxParseExpressionContainer (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4632:31)
+      at JSXParserMixin.jsxParseElementAt (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4711:36)
+      at JSXParserMixin.jsxParseElement (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4749:17)
+      at JSXParserMixin.parseExprAtom (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:4759:19)
+      at JSXParserMixin.parseExprSubscripts (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11081:23)
+      at JSXParserMixin.parseUpdate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11066:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11046:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10899:61)
+      at JSXParserMixin.parseExprOps (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10904:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10881:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10831:21)
+      at /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10800:39
+      at JSXParserMixin.allowInAnd (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:12426:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10800:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:12493:17)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:11675:28)
+6:32:55 PM [vite] hmr update /src/pages/AdminDashboard.jsx
+6:33:10 PM [vite] hmr update /src/components/Navbar.jsx

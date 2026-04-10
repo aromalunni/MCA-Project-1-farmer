@@ -70,6 +70,7 @@ export default function Navbar({ user, onLogout }) {
     } else {
       navigate(item.path);
     }
+    window.scrollTo(0, 0);
   };
 
   return (
