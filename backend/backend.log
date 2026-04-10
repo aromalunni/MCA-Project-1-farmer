@@ -365,3 +365,19 @@ INFO:     Finished server process [11723]
 INFO:     Started server process [11835]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'routes/farmer_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11835]
+INFO:     Started server process [24358]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'routes/images.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [24358]
+INFO:     Started server process [24598]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

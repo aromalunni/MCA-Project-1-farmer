@@ -23,11 +23,24 @@ async def upload_image_file(
     
     upload_dir = "static/uploads"
     os.makedirs(upload_dir, exist_ok=True)
-    
+
+    # Free tier: keep max 20 images, delete oldest when full
+    MAX_IMAGES = 20
+    existing_files = sorted(
+        [f for f in os.listdir(upload_dir) if f != '.gitkeep'],
+        key=lambda f: os.path.getmtime(os.path.join(upload_dir, f))
+    )
+    while len(existing_files) >= MAX_IMAGES:
+        oldest = existing_files.pop(0)
+        try:
+            os.remove(os.path.join(upload_dir, oldest))
+        except:
+            pass
+
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = os.path.join(upload_dir, unique_filename)
-    
+
     try:
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -36,8 +49,11 @@ async def upload_image_file(
             status_code=500,
             detail=f"Could not save file: {str(e)}"
         )
-        
-    return {"url": f"http://localhost:8000/static/uploads/{unique_filename}", "filename": unique_filename}
+
+    # Use relative URL so it works on any host
+    from fastapi import Request
+    base_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:8000")
+    return {"url": f"{base_url}/static/uploads/{unique_filename}", "filename": unique_filename}
 
 class AnalyzeRequest(BaseModel):
     image_url: str

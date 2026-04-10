@@ -44,6 +44,28 @@ async def register_farmer(
     Handles file uploads and creates User, FarmerProfile, and LandRecord entries.
     """
     
+    # Free tier limit: max 7 users. Auto-delete oldest farmer (never admin/lakshmi)
+    PROTECTED_USERNAMES = ["admin", "lakshmi"]
+    MAX_USERS = 7
+
+    total_users = db.query(User).count()
+    if total_users >= MAX_USERS:
+        # Find oldest non-protected farmer to delete
+        oldest = db.query(User).filter(
+            User.username.notin_(PROTECTED_USERNAMES),
+            User.role == "farmer"
+        ).order_by(User.created_at.asc()).first()
+
+        if oldest:
+            # Delete all related data
+            from models import AuditLog, Claim, LandRecord, FarmerProfile
+            db.query(AuditLog).filter(AuditLog.user_id == oldest.id).delete()
+            db.query(Claim).filter(Claim.user_id == oldest.id).delete()
+            db.query(LandRecord).filter(LandRecord.user_id == oldest.id).delete()
+            db.query(FarmerProfile).filter(FarmerProfile.user_id == oldest.id).delete()
+            db.delete(oldest)
+            db.flush()
+
     # Check if user already exists
     existing_user = db.query(User).filter(User.username == username).first()
     if existing_user:
