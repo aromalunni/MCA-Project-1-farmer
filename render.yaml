@@ -12,7 +12,7 @@ services:
     rootDir: backend
     buildCommand: ./build.sh
     startCommand: gunicorn main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
-    plan: free
+    plan: starter
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -30,6 +30,7 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    plan: starter
     headers:
       - path: /*
         name: Cache-Control
@@ -38,4 +39,3 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
-    plan: free
