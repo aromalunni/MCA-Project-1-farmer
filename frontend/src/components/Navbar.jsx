@@ -12,7 +12,10 @@ import {
   FileCheck,
   TrendingUp,
   Landmark,
-  Languages
+  Languages,
+  Clock,
+  Settings,
+  Users
 } from 'lucide-react';
 
 export default function Navbar({ user, onLogout }) {
@@ -30,24 +33,44 @@ export default function Navbar({ user, onLogout }) {
     navigate('/login');
   };
 
-  const adminRoles = ['admin', 'officer', 'district_admin', 'state_admin', 'super_admin'];
-
-  const navItems = [
-    // Farmer nav items
-    { label: t('dashboard'), path: '/', icon: <LayoutDashboard size={18} />, roles: ['farmer'] },
-    { label: t('lands'), path: '/lands', icon: <Map size={18} />, roles: ['farmer'] },
-    { label: t('upload'), path: '/upload', icon: <FileCheck size={18} />, roles: ['farmer'] },
-    { label: t('claims'), path: '/claims', icon: <TrendingUp size={18} />, roles: ['farmer'] },
-    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} />, roles: ['farmer'] },
-    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} />, roles: ['farmer'] },
-    // Admin nav items - direct tab links
-    { label: 'Claims', path: '/admin?tab=claims', icon: <FileCheck size={18} />, roles: adminRoles },
-    { label: 'Farmers', path: '/admin?tab=farmers', icon: <User size={18} />, roles: adminRoles },
-    { label: 'History', path: '/admin?tab=history', icon: <TrendingUp size={18} />, roles: adminRoles },
-    { label: 'Rate Settings', path: '/admin?tab=settings', icon: <Shield size={18} />, roles: adminRoles },
-    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} />, roles: adminRoles },
-    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} />, roles: adminRoles },
+  // Farmer navigation
+  const farmerItems = [
+    { label: t('dashboard'), path: '/', icon: <LayoutDashboard size={18} /> },
+    { label: t('lands'), path: '/lands', icon: <Map size={18} /> },
+    { label: t('upload'), path: '/upload', icon: <FileCheck size={18} /> },
+    { label: t('claims'), path: '/claims', icon: <TrendingUp size={18} /> },
+    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} /> },
+    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} /> },
   ];
+
+  // Admin navigation - uses onClick to set tab via URL
+  const adminItems = [
+    { label: 'Claims', tab: 'claims', icon: <FileCheck size={18} /> },
+    { label: 'Farmers', tab: 'farmers', icon: <Users size={18} /> },
+    { label: 'Claim History', tab: 'history', icon: <Clock size={18} /> },
+    { label: 'Rate Settings', tab: 'settings', icon: <Settings size={18} /> },
+    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} /> },
+    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} /> },
+  ];
+
+  const navItems = isAdminOrOfficer ? adminItems : farmerItems;
+
+  // Check if an admin tab is active
+  const currentTab = new URLSearchParams(location.search).get('tab') || 'claims';
+
+  const isActive = (item) => {
+    if (item.tab) return location.pathname === '/admin' && currentTab === item.tab;
+    return location.pathname === item.path;
+  };
+
+  const handleNavClick = (item) => {
+    setIsOpen(false);
+    if (item.tab) {
+      navigate(`/admin?tab=${item.tab}`);
+    } else {
+      navigate(item.path);
+    }
+  };
 
   return (
     <nav className="glass-card navbar-container" style={{
@@ -63,7 +86,6 @@ export default function Navbar({ user, onLogout }) {
       background: 'rgba(255,255,255,0.9)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/* Mobile Menu Toggle */}
         <button
           className="mobile-menu-toggle"
           onClick={() => setIsOpen(!isOpen)}
@@ -81,31 +103,30 @@ export default function Navbar({ user, onLogout }) {
         </div>
       </div>
 
-      <div className={`navbar-menu ${isOpen ? 'open' : ''}`} style={{ display: 'flex', gap: '1rem' }}>
-        {navItems.filter(item => {
-          if (item.roles) return item.roles.includes(user?.role);
-          return true;
-        }).map((item, idx) => (
-          <Link
+      <div className={`navbar-menu ${isOpen ? 'open' : ''}`} style={{ display: 'flex', gap: '0.5rem' }}>
+        {navItems.map((item, idx) => (
+          <button
             key={idx}
-            to={item.path}
-            onClick={() => setIsOpen(false)}
+            onClick={() => handleNavClick(item)}
             style={{
               textDecoration: 'none',
-              color: (location.pathname + location.search) === item.path || location.pathname === item.path ? 'var(--paddy-green)' : '#555',
+              color: isActive(item) ? 'var(--paddy-green)' : '#555',
               fontWeight: 600,
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               padding: '8px 12px',
               borderRadius: '10px',
-              background: (location.pathname + location.search) === item.path || location.pathname === item.path ? 'rgba(0,132,61,0.05)' : 'transparent',
-              transition: 'all 0.2s'
+              background: isActive(item) ? 'rgba(0,132,61,0.08)' : 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              whiteSpace: 'nowrap'
             }}
           >
             {item.icon} {item.label}
-          </Link>
+          </button>
         ))}
       </div>
 
@@ -113,17 +134,9 @@ export default function Navbar({ user, onLogout }) {
         <button
           onClick={toggleLanguage}
           style={{
-            background: 'var(--paddy-green)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '4px 8px',
-            fontSize: '0.8rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
+            background: 'var(--paddy-green)', color: 'white', border: 'none',
+            borderRadius: '8px', padding: '4px 8px', fontSize: '0.8rem',
+            fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
           }}
         >
           <Languages size={14} />
@@ -137,15 +150,9 @@ export default function Navbar({ user, onLogout }) {
         <button
           onClick={handleLogout}
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--status-rejected)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            fontSize: '0.9rem',
-            fontWeight: 600
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: 'var(--status-rejected)', display: 'flex', alignItems: 'center',
+            gap: '4px', fontSize: '0.9rem', fontWeight: 600
           }}
         >
           <LogOut size={18} />
@@ -154,4 +161,3 @@ export default function Navbar({ user, onLogout }) {
     </nav>
   );
 }
-

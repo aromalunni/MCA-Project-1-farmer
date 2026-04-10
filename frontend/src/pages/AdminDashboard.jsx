@@ -30,9 +30,9 @@ import { useToast } from '../components/Toast';
 export default function AdminDashboard({ user }) {
     const { t } = useLanguage();
     const toast = useToast();
-    // Read tab from URL query param
-    const urlTab = new URLSearchParams(window.location.search).get('tab');
-    const [activeTab, setActiveTab] = useState(urlTab || 'claims');
+    // Read tab from URL query param - update on every render
+    const urlTab = new URLSearchParams(window.location.search).get('tab') || 'claims';
+    const [activeTab, setActiveTab] = useState(urlTab);
     const [claims, setClaims] = useState([]);
     const [farmers, setFarmers] = useState([]);
     const [selectedFarmer, setSelectedFarmer] = useState(null);
@@ -57,6 +57,12 @@ export default function AdminDashboard({ user }) {
     const [editingRate, setEditingRate] = useState(null);
     const [rateForm, setRateForm] = useState({ rate_per_acre: '', rate_per_cent: '' });
     const [rateSaving, setRateSaving] = useState(false);
+
+    // Sync active tab with URL changes
+    useEffect(() => {
+        const tab = new URLSearchParams(window.location.search).get('tab') || 'claims';
+        setActiveTab(tab);
+    });
 
     useEffect(() => {
         fetchData();
@@ -328,38 +334,6 @@ export default function AdminDashboard({ user }) {
                     </div>
                 </div>
             )}
-
-            {/* Tabs */}
-            <div style={{ display: 'flex', gap: '0', marginBottom: '2rem', borderBottom: '2px solid #eee', overflowX: 'auto' }}>
-                {[
-                    { key: 'claims', label: '📋 Claims', icon: <FileCheck size={16} /> },
-                    { key: 'farmers', label: '👥 Farmers', icon: <Users size={16} /> },
-                    { key: 'history', label: '📜 Claim History', icon: <Clock size={16} /> },
-                    { key: 'settings', label: '⚙️ Rate Settings', icon: <IndianRupee size={16} /> },
-                ].map(tab => (
-                    <button
-                        key={tab.key}
-                        onClick={() => setActiveTab(tab.key)}
-                        style={{
-                            padding: '1rem 1.5rem',
-                            border: 'none',
-                            background: 'none',
-                            cursor: 'pointer',
-                            fontWeight: '600',
-                            fontSize: '0.9rem',
-                            color: activeTab === tab.key ? 'var(--paddy-green)' : '#888',
-                            borderBottom: activeTab === tab.key ? '3px solid var(--paddy-green)' : '3px solid transparent',
-                            transition: 'all 0.3s',
-                            whiteSpace: 'nowrap',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}
-                    >
-                        {tab.icon} {tab.label}
-                    </button>
-                ))}
-            </div>
 
             {/* ===== CLAIMS TAB (Pending for Approval) ===== */}
             {activeTab === 'claims' && (
