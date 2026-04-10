@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
-import { Shield, User, MapPin, Upload, Sprout, CheckCircle, Info, Loader2, Languages, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Shield, User, MapPin, Upload, Sprout, CheckCircle, Info, Loader2, Languages, ArrowRight, ArrowLeft, Mail, Phone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Register() {
@@ -13,9 +13,11 @@ export default function Register() {
     const [step, setStep] = useState(1);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    const [contactType, setContactType] = useState('email'); // 'email' or 'mobile'
     const [formData, setFormData] = useState({
         full_name: '',
         username: '',
+        email_or_mobile: '',
         password: '',
         address: '',
         village: '',
@@ -36,7 +38,16 @@ export default function Register() {
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        const updated = { ...formData, [name]: value };
+
+        // Auto-generate username from full_name
+        if (name === 'full_name') {
+            const autoUsername = value.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+            updated.username = autoUsername;
+        }
+
+        setFormData(updated);
     };
 
     const handleFileChange = (e) => {
@@ -87,7 +98,7 @@ export default function Register() {
     const nextStep = () => {
         let requiredFields = [];
         if (step === 1) {
-            requiredFields = ['full_name', 'username', 'password'];
+            requiredFields = ['full_name', 'username', 'email_or_mobile', 'password'];
         } else if (step === 2) {
             requiredFields = ['village', 'district', 'pin_code', 'survey_number', 'area', 'crop_type', 'latitude', 'longitude'];
         }
@@ -103,6 +114,14 @@ export default function Register() {
         // Additional validation
         if (step === 1 && formData.username.length < 3) {
             setError('Username must be at least 3 characters');
+            return;
+        }
+        if (step === 1 && contactType === 'mobile' && !/^\d{10}$/.test(formData.email_or_mobile)) {
+            setError('Mobile number must be exactly 10 digits');
+            return;
+        }
+        if (step === 1 && contactType === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email_or_mobile)) {
+            setError('Please enter a valid email address');
             return;
         }
         if (step === 2 && formData.pin_code.length !== 6) {
@@ -189,29 +208,78 @@ export default function Register() {
 
                 <form onSubmit={handleSubmit}>
                     {step === 1 && (
-                        <div className="gov-grid animate-fade-in">
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">{t('fullName')}</label>
-                                <input name="full_name" className="gov-input w-full" required value={formData.full_name} onChange={handleChange} placeholder="Name as per Aadhaar" />
+                        <div className="animate-fade-in">
+                            <div className="gov-grid">
+                                <div>
+                                    <label className="text-sm font-semibold mb-1 block">{t('fullName')}</label>
+                                    <input name="full_name" className="gov-input w-full" required value={formData.full_name} onChange={handleChange} placeholder="Name as per Aadhaar" />
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold mb-1 block">Username <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>(auto-generated)</span></label>
+                                    <input
+                                        name="username"
+                                        className="gov-input w-full"
+                                        required
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        placeholder="Auto-generated from name"
+                                        style={{ background: '#F5F5F5' }}
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">Username</label>
+
+                            {/* Email or Mobile Toggle */}
+                            <div style={{ margin: '1.2rem 0' }}>
+                                <label className="text-sm font-semibold mb-1 block">Contact Method</label>
+                                <div style={{
+                                    display: 'flex', borderRadius: '12px', overflow: 'hidden',
+                                    border: '2px solid var(--paddy-green)', width: 'fit-content', marginBottom: '0.8rem'
+                                }}>
+                                    {[
+                                        { key: 'email', label: 'Email', icon: <Mail size={14} /> },
+                                        { key: 'mobile', label: 'Mobile', icon: <Phone size={14} /> }
+                                    ].map(opt => (
+                                        <button key={opt.key} type="button" onClick={() => {
+                                            setContactType(opt.key);
+                                            setFormData({ ...formData, email_or_mobile: '' });
+                                        }} style={{
+                                            padding: '0.5rem 1.2rem', border: 'none', cursor: 'pointer',
+                                            fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px',
+                                            background: contactType === opt.key ? 'var(--paddy-green)' : 'white',
+                                            color: contactType === opt.key ? 'white' : 'var(--paddy-green)',
+                                            transition: 'all 0.3s ease'
+                                        }}>
+                                            {opt.icon} {opt.label}
+                                        </button>
+                                    ))}
+                                </div>
                                 <input
-                                    name="username"
+                                    name="email_or_mobile"
                                     className="gov-input w-full"
                                     required
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    placeholder="Enter username"
+                                    type={contactType === 'email' ? 'email' : 'tel'}
+                                    value={formData.email_or_mobile}
+                                    onChange={(e) => {
+                                        if (contactType === 'mobile') {
+                                            if (/^\d*$/.test(e.target.value) && e.target.value.length <= 10) handleChange(e);
+                                        } else {
+                                            handleChange(e);
+                                        }
+                                    }}
+                                    maxLength={contactType === 'mobile' ? 10 : undefined}
+                                    placeholder={contactType === 'email' ? 'Enter email address' : 'Enter 10-digit mobile number'}
                                 />
                             </div>
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">{t('password')}</label>
-                                <input name="password" type="password" className="gov-input w-full" required value={formData.password} onChange={handleChange} />
-                            </div>
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">{t('address')}</label>
-                                <input name="address" className="gov-input w-full" value={formData.address} onChange={handleChange} placeholder="House Name/No." />
+
+                            <div className="gov-grid">
+                                <div>
+                                    <label className="text-sm font-semibold mb-1 block">{t('password')}</label>
+                                    <input name="password" type="password" className="gov-input w-full" required value={formData.password} onChange={handleChange} />
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold mb-1 block">{t('address')}</label>
+                                    <input name="address" className="gov-input w-full" value={formData.address} onChange={handleChange} placeholder="House Name/No." />
+                                </div>
                             </div>
                         </div>
                     )}

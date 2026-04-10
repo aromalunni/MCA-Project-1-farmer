@@ -328,3 +328,40 @@ INFO:     Finished server process [3255]
 INFO:     Started server process [3412]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+✅ Database initialized successfully
+INFO:     127.0.0.1:53474 - "OPTIONS /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53475 - "OPTIONS /api/claims/my-claims HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53477 - "OPTIONS /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53479 - "OPTIONS /api/claims/my-claims HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53479 - "GET /api/claims/my-claims HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:53477 - "GET /api/claims/my-claims HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:53477 - "OPTIONS /api/admin/rates/public HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53479 - "OPTIONS /api/admin/rates/public HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53481 - "GET /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53479 - "GET /api/admin/rates/public HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53481 - "GET /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53479 - "GET /api/admin/rates/public HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'routes/farmer_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3412]
+INFO:     Started server process [11568]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'routes/farmer_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11568]
+INFO:     Started server process [11723]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'routes/farmer_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11723]
+INFO:     Started server process [11835]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

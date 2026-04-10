@@ -17,6 +17,7 @@ async def register_farmer(
     # Personal Details
     full_name: str = Form(...),
     username: str = Form(...),
+    email_or_mobile: str = Form(""),
     password: str = Form(...),
     address: str = Form(None),
     village: str = Form(...),
@@ -45,22 +46,32 @@ async def register_farmer(
     
     # Check if user already exists
     existing_user = db.query(User).filter(User.username == username).first()
-
     if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
 
-    # 1. Create User
+    # Check email/mobile duplicate
+    if email_or_mobile and "@" in email_or_mobile:
+        existing_email = db.query(User).filter(User.email == email_or_mobile).first()
+        if existing_email:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    elif email_or_mobile:
+        existing_phone = db.query(User).filter(User.phone == email_or_mobile).first()
+        if existing_phone:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Mobile number already registered")
+
+    # 1. Create User - determine email and phone from contact
+    is_email = "@" in email_or_mobile
+    user_email = email_or_mobile if is_email else f"{username}_{int(datetime.now().timestamp())}@farmer.com"
+    user_phone = email_or_mobile if not is_email else ""
+
     password_hash = auth_service.hash_password(password)
     new_user = User(
         username=username,
-        email=f"{username}_{int(datetime.now().timestamp())}@farmer.com",
+        email=user_email,
         password_hash=password_hash,
         full_name=full_name,
         role="farmer",
-        phone="",
+        phone=user_phone,
         address=f"{address}, {village}, {district}, {state} - {pin_code}",
         is_active=True # Auto-active for now, or set to False if approval needed
     )
