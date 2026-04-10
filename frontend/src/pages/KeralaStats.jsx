@@ -37,7 +37,10 @@ ChartJS.register(
     Legend
 );
 
+import { useLanguage } from '../context/LanguageContext';
+
 export default function KeralaStats() {
+    const { t, language } = useLanguage();
     const [monsoon, setMonsoon] = useState(null);
     const [spices, setSpices] = useState([]);
     const [crops, setCrops] = useState([]);
@@ -107,10 +110,10 @@ export default function KeralaStats() {
                 borderRadius: 'var(--radius-xl)', overflow: 'hidden'
             }}>
                 <h1 style={{ fontSize: '2.2rem', marginBottom: '0.5rem', fontWeight: 700, textShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
-                    Kerala Agriculture Intelligence
+                    {t('keralaAgriIntel')}
                 </h1>
                 <p style={{ opacity: 0.95, fontSize: '1.05rem', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
-                    Real-time monsoon tracking, spice markets, and crop analytics
+                    {t('keralaAgriDesc')}
                 </p>
             </div>
 
@@ -119,7 +122,7 @@ export default function KeralaStats() {
                 {/* Monsoon Tracking */}
                 <div className="glass-card" style={{ background: '#E1F5FE', border: '1px solid #B3E5FC' }}>
                     <h3 style={{ color: '#0277BD', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <CloudRain size={22} /> Monsoon Tracking
+                        <CloudRain size={22} /> {t('monsoonTracking')}
                     </h3>
                     {monsoon && (
                         <>
@@ -128,20 +131,20 @@ export default function KeralaStats() {
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginBottom: '1rem' }}>
                                 <div style={{ background: 'white', padding: '1rem', borderRadius: '12px' }}>
-                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>Rainfall</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>{t('rainfall')}</p>
                                     <p style={{ fontWeight: 700, color: '#0277BD', margin: 0, fontSize: '1.1rem' }}>{monsoon.current_rainfall}</p>
                                     <p style={{ fontSize: '0.7rem', color: '#999', margin: 0 }}>Total: {monsoon.total_rainfall}</p>
                                 </div>
                                 <div style={{ background: 'white', padding: '1rem', borderRadius: '12px' }}>
-                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>Humidity</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>{t('humidity')}</p>
                                     <p style={{ fontWeight: 700, color: '#039BE5', margin: 0, fontSize: '1.1rem' }}>{monsoon.humidity}</p>
                                 </div>
                                 <div style={{ background: 'white', padding: '1rem', borderRadius: '12px' }}>
-                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>Wind</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>{t('wind')}</p>
                                     <p style={{ fontWeight: 700, color: '#546E7A', margin: 0, fontSize: '1.1rem' }}>{monsoon.wind_speed}</p>
                                 </div>
                                 <div style={{ background: 'white', padding: '1rem', borderRadius: '12px' }}>
-                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>Forecast</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 4px' }}>{t('forecast')}</p>
                                     <p style={{ fontWeight: 600, color: '#555', margin: 0, fontSize: '0.8rem', fontStyle: 'italic' }}>"{monsoon.forecast}"</p>
                                 </div>
                             </div>
@@ -166,7 +169,7 @@ export default function KeralaStats() {
                 {/* Rainfall Chart */}
                 <div className="glass-card">
                     <h3 style={{ color: '#1565C0', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Activity size={22} /> Rainfall Trends
+                        <Activity size={22} /> {t('rainfallTrends')}
                     </h3>
                     <div style={{ height: '320px' }}>
                         <Bar options={options} data={rainfallData} />
@@ -177,7 +180,7 @@ export default function KeralaStats() {
             {/* Crop Monitor */}
             <div style={{ marginBottom: '2rem' }}>
                 <h3 style={{ color: '#2E7D32', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Sprout size={22} color="#43A047" /> Critical Crop Monitor
+                    <Sprout size={22} color="#43A047" /> {t('cropMonitor')}
                 </h3>
                 <div className="gov-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
                     {crops.map((crop, index) => (
@@ -210,7 +213,7 @@ export default function KeralaStats() {
                 {/* Spice Market */}
                 <div className="glass-card">
                     <h3 style={{ color: '#BF360C', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Leaf size={22} color="#FF5722" /> Spice Market Intelligence
+                        <Leaf size={22} color="#FF5722" /> {t('spiceMarket')}
                     </h3>
                     <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
@@ -248,7 +251,7 @@ export default function KeralaStats() {
                 {/* District Hazard Map - Interactive */}
                 <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
                     <div style={{ padding: '1rem 1.2rem', background: '#C62828', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <MapPin size={18} /> <strong>Kerala District Risk Map</strong>
+                        <MapPin size={18} /> <strong>{t('districtHazard')}</strong>
                     </div>
                     <KeralaDistrictMap risks={risks} />
                 </div>
@@ -257,7 +260,7 @@ export default function KeralaStats() {
             {/* Full Width Kerala Map */}
             <div className="glass-card" style={{ marginTop: '2rem', padding: 0, overflow: 'hidden' }}>
                 <div style={{ padding: '1rem 1.2rem', background: 'var(--paddy-green)', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <MapPin size={18} /> <strong>Kerala Agriculture Map - All Districts</strong>
+                    <MapPin size={18} /> <strong>{t('keralaFullMap')}</strong>
                 </div>
                 <KeralaFullMap />
             </div>

@@ -169,6 +169,19 @@ export const translations = {
         editProfile: "Edit Profile",
         saveChanges: "Save Changes",
         phone: "Phone",
+        // Kerala Stats
+        keralaAgriIntel: "Kerala Agriculture Intelligence",
+        keralaAgriDesc: "Real-time monsoon tracking, spice markets, and crop analytics",
+        monsoonTracking: "Monsoon Tracking",
+        rainfallTrends: "Rainfall Trends",
+        cropMonitor: "Critical Crop Monitor",
+        spiceMarket: "Spice Market Intelligence",
+        districtHazard: "Kerala District Risk Map",
+        keralaFullMap: "Kerala Agriculture Map - All Districts",
+        rainfall: "Rainfall",
+        humidity: "Humidity",
+        wind: "Wind",
+        forecast: "Forecast",
     },
     ml: {
         welcome: "സ്വാഗതം",
@@ -340,5 +353,18 @@ export const translations = {
         editProfile: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
         saveChanges: "മാറ്റങ്ങൾ സേവ് ചെയ്യുക",
         phone: "ഫോൺ",
+        // Kerala Stats
+        keralaAgriIntel: "കേരള കാർഷിക ഇന്റലിജൻസ്",
+        keralaAgriDesc: "തത്സമയ മൺസൂൺ ട്രാക്കിംഗ്, സുഗന്ധവ്യഞ്ജന വിപണി, വിള വിശകലനം",
+        monsoonTracking: "മൺസൂൺ ട്രാക്കിംഗ്",
+        rainfallTrends: "മഴ പ്രവണതകൾ",
+        cropMonitor: "വിള നിരീക്ഷണം",
+        spiceMarket: "സുഗന്ധവ്യഞ്ജന വിപണി",
+        districtHazard: "കേരള ജില്ലാ അപകട ഭൂപടം",
+        keralaFullMap: "കേരള കാർഷിക ഭൂപടം - എല്ലാ ജില്ലകളും",
+        rainfall: "മഴ",
+        humidity: "ആർദ്രത",
+        wind: "കാറ്റ്",
+        forecast: "പ്രവചനം",
     }
 };

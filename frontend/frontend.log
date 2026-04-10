@@ -446,3 +446,21 @@
       at JSXParserMixin.parseMaybeAssign (/Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10831:21)
       at /Users/aromalkm/Downloads/Farmer-Claim-main/frontend/node_modules/@babel/parser/lib/index.js:10800:39
 6:41:39 PM [vite] hmr update /src/pages/Lands.jsx
+7:00:49 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:01:22 PM [vite] hmr update /src/context/LanguageContext.jsx
+7:01:22 PM [vite] hmr invalidate /src/context/LanguageContext.jsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+7:01:22 PM [vite] page reload src/context/LanguageContext.jsx
+7:01:46 PM [vite] hmr update /src/context/LanguageContext.jsx
+7:01:46 PM [vite] hmr invalidate /src/context/LanguageContext.jsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+7:01:46 PM [vite] page reload src/context/LanguageContext.jsx
+7:02:00 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:02:08 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:34:25 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:34:35 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:34:42 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:34:50 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:34:58 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:35:12 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:35:21 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:35:30 PM [vite] hmr update /src/pages/KeralaStats.jsx
+7:35:40 PM [vite] hmr update /src/pages/KeralaStats.jsx
