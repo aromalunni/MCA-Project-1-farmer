@@ -99,7 +99,7 @@ export default function Claims() {
       <div style={{ display: 'grid', gap: '1.5rem' }}>
         {claims.map(claim => (
           <div key={claim.id} className="glass-card" style={{ cursor: 'pointer' }} onClick={() => setSelectedClaim(claim)}>
-            <div className="gov-grid" style={{ gridTemplateColumns: '1.5fr 1fr 1fr auto', gap: '2rem', alignItems: 'center' }}>
+            <div className="responsive-row-claim">
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
                   <h3 style={{ margin: 0 }}>{claim.claim_number}</h3>

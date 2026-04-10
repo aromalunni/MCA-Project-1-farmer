@@ -310,3 +310,134 @@ body {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
+/* ================================== */
+/* MOBILE RESPONSIVE STYLES           */
+/* ================================== */
+
+@media (max-width: 768px) {
+  /* Dashboard container */
+  .dashboard-container {
+    padding: 1rem !important;
+  }
+
+  /* Glass cards */
+  .glass-card {
+    padding: 1.2rem !important;
+    border-radius: 14px !important;
+  }
+
+  /* Welcome banner */
+  .glass-card h1 {
+    font-size: 1.4rem !important;
+  }
+
+  /* Tables - horizontal scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  thead, tbody, tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  /* Upload box */
+  .upload-box {
+    height: 220px;
+    margin-bottom: 1rem;
+  }
+
+  /* Buttons */
+  .btn-gov {
+    padding: 0.7rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Progress stepper */
+  .progress-stepper {
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Forms - full width inputs */
+  .gov-input {
+    font-size: 0.9rem !important;
+    padding: 0.8rem !important;
+  }
+
+  /* Claims card grid - stack vertically */
+  .gov-grid[style*="1.5fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Receipt modal */
+  .receipt table {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small phones */
+  .dashboard-container {
+    padding: 0.5rem !important;
+  }
+
+  .glass-card {
+    padding: 1rem !important;
+    border-radius: 12px !important;
+  }
+
+  .glass-card h1 {
+    font-size: 1.2rem !important;
+  }
+
+  .glass-card h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .glass-card h3 {
+    font-size: 0.95rem !important;
+  }
+
+  /* Login/Register page */
+  .glass-card[style*="maxWidth: '450px'"],
+  .glass-card[style*="maxWidth: '800px'"] {
+    padding: 1.5rem !important;
+  }
+
+  /* Hide secondary text on very small screens */
+  .badge {
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Quick action cards - tighter */
+  .gov-grid {
+    gap: 0.8rem !important;
+  }
+
+  /* Upload scanning overlay text */
+  .upload-box span {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsive grid helpers */
+.responsive-row-claim {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .responsive-row-claim {
+    grid-template-columns: 1fr !important;
+    gap: 0.8rem !important;
+  }
+}
