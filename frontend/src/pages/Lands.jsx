@@ -1,7 +1,7 @@
 // frontend/src/pages/Lands.jsx
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { landService } from '../services/api';
-import { Map, Plus, MapPin, Ruler, Sprout, Eye, EyeOff, Navigation, Search, Loader, X } from 'lucide-react';
+import { Map, Plus, MapPin, Ruler, Sprout, Eye, EyeOff, Navigation, Search, Loader, X, MapPinned } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -20,6 +20,11 @@ export default function Lands({ user }) {
     // Location finder state
     const [searchLat, setSearchLat] = useState('');
     const [searchLng, setSearchLng] = useState('');
+
+    const [placeName, setPlaceName] = useState('');
+    const [placeResults, setPlaceResults] = useState([]);
+    const [placeLoading, setPlaceLoading] = useState(false);
+    const [coordMode, setCoordMode] = useState('place'); // 'place' or 'manual'
 
     const [newLand, setNewLand] = useState({
         survey_number: '', area: '', unit: 'Acre', crop_type: 'Paddy',
@@ -169,6 +174,37 @@ export default function Lands({ user }) {
         );
     };
 
+    // Search place name → get lat/lng using OpenStreetMap Nominatim
+    const searchPlace = async () => {
+        if (!placeName.trim()) return;
+        setPlaceLoading(true);
+        setPlaceResults([]);
+        try {
+            const query = placeName.trim() + ', Kerala, India';
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=in&viewbox=74.85,8.17,77.42,12.79&bounded=1`);
+            const data = await res.json();
+            if (data.length > 0) {
+                setPlaceResults(data);
+            } else {
+                setPlaceResults([]);
+                alert('Place not found in Kerala. Try a different name.');
+            }
+        } catch (err) {
+            alert('Search failed. Check your internet connection.');
+        }
+        setPlaceLoading(false);
+    };
+
+    // Select a place from results
+    const selectPlace = (place) => {
+        const lat = parseFloat(place.lat).toFixed(6);
+        const lng = parseFloat(place.lon).toFixed(6);
+        setNewLand(prev => ({ ...prev, latitude: lat, longitude: lng }));
+        setPlaceName(place.display_name.split(',')[0]);
+        setPlaceResults([]);
+        setTimeout(() => updateFormMap(lat, lng), 300);
+    };
+
     // Search location on main map
     const handleSearchLocation = () => {
         const lat = parseFloat(searchLat);
@@ -303,11 +339,11 @@ export default function Lands({ user }) {
                                 </select>
                             </div>
 
-                            {/* GPS with Live Map */}
+                            {/* GPS Location Section */}
                             <div style={{ marginBottom: '1rem', padding: '1rem', background: '#F1F8E9', borderRadius: '12px', border: '1px solid #C8E6C9' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                                     <label style={{ fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <MapPin size={16} color="var(--paddy-green)" /> GPS Location
+                                        <MapPin size={16} color="var(--paddy-green)" /> Location
                                     </label>
                                     <button type="button" className="btn-gov" style={{ padding: '4px 12px', fontSize: '0.75rem', background: '#1565C0' }}
                                         onClick={() => getMyLocation('form')} disabled={gpsLoading}>
@@ -315,22 +351,89 @@ export default function Lands({ user }) {
                                         <span style={{ marginLeft: '4px' }}>Use My GPS</span>
                                     </button>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginBottom: '0.8rem' }}>
-                                    <input className="gov-input" type="number" step="0.000001" placeholder="Latitude" required
-                                        value={newLand.latitude}
-                                        onChange={e => {
-                                            setNewLand({ ...newLand, latitude: e.target.value });
-                                            updateFormMap(e.target.value, newLand.longitude);
-                                        }}
-                                    />
-                                    <input className="gov-input" type="number" step="0.000001" placeholder="Longitude" required
-                                        value={newLand.longitude}
-                                        onChange={e => {
-                                            setNewLand({ ...newLand, longitude: e.target.value });
-                                            updateFormMap(newLand.latitude, e.target.value);
-                                        }}
-                                    />
+
+                                {/* Place / Manual Toggle */}
+                                <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1.5px solid var(--paddy-green)', marginBottom: '0.8rem' }}>
+                                    {[
+                                        { key: 'place', label: 'Search Place' },
+                                        { key: 'manual', label: 'Enter Lat/Lng' }
+                                    ].map(opt => (
+                                        <button key={opt.key} type="button" onClick={() => setCoordMode(opt.key)} style={{
+                                            flex: 1, padding: '6px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.78rem',
+                                            background: coordMode === opt.key ? 'var(--paddy-green)' : 'white',
+                                            color: coordMode === opt.key ? 'white' : 'var(--paddy-green)',
+                                            transition: 'all 0.2s'
+                                        }}>{opt.label}</button>
+                                    ))}
                                 </div>
+
+                                {/* Place Search Mode */}
+                                {coordMode === 'place' && (
+                                    <div style={{ marginBottom: '0.8rem' }}>
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                            <input
+                                                className="gov-input"
+                                                style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}
+                                                placeholder="Enter place name (e.g. Alappuzha, Kuttanad)"
+                                                value={placeName}
+                                                onChange={e => setPlaceName(e.target.value)}
+                                                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), searchPlace())}
+                                            />
+                                            <button type="button" className="btn-gov" style={{ padding: '0.5rem 0.8rem', fontSize: '0.8rem' }}
+                                                onClick={searchPlace} disabled={placeLoading}>
+                                                {placeLoading ? <Loader className="spin" size={14} /> : <Search size={14} />}
+                                            </button>
+                                        </div>
+
+                                        {/* Place Search Results */}
+                                        {placeResults.length > 0 && (
+                                            <div style={{ background: 'white', borderRadius: '8px', border: '1px solid #C8E6C9', maxHeight: '150px', overflow: 'auto' }}>
+                                                {placeResults.map((p, i) => (
+                                                    <div key={i} onClick={() => selectPlace(p)} style={{
+                                                        padding: '8px 10px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0',
+                                                        fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px',
+                                                        transition: 'background 0.2s'
+                                                    }} onMouseOver={e => e.currentTarget.style.background = '#E8F5E9'}
+                                                       onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                                                        <MapPinned size={14} color="var(--paddy-green)" />
+                                                        <div>
+                                                            <p style={{ margin: 0, fontWeight: 600, fontSize: '0.82rem' }}>{p.display_name.split(',').slice(0, 3).join(', ')}</p>
+                                                            <p style={{ margin: 0, fontSize: '0.7rem', opacity: 0.5 }}>Lat: {parseFloat(p.lat).toFixed(4)}, Lng: {parseFloat(p.lon).toFixed(4)}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Manual Lat/Lng Mode */}
+                                {coordMode === 'manual' && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginBottom: '0.8rem' }}>
+                                        <input className="gov-input" type="number" step="0.000001" placeholder="Latitude" required
+                                            value={newLand.latitude}
+                                            onChange={e => {
+                                                setNewLand({ ...newLand, latitude: e.target.value });
+                                                updateFormMap(e.target.value, newLand.longitude);
+                                            }}
+                                        />
+                                        <input className="gov-input" type="number" step="0.000001" placeholder="Longitude" required
+                                            value={newLand.longitude}
+                                            onChange={e => {
+                                                setNewLand({ ...newLand, longitude: e.target.value });
+                                                updateFormMap(newLand.latitude, e.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Show auto-filled coordinates */}
+                                {coordMode === 'place' && newLand.latitude && newLand.longitude && (
+                                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem', fontSize: '0.8rem', color: '#558B2F' }}>
+                                        <span>Lat: <strong>{newLand.latitude}</strong></span>
+                                        <span>Lng: <strong>{newLand.longitude}</strong></span>
+                                    </div>
+                                )}
 
                                 {/* Live Map Preview */}
                                 <div ref={formMapRef} style={{
@@ -340,7 +443,7 @@ export default function Lands({ user }) {
                                 }}>
                                     {(!newLand.latitude || !newLand.longitude) && (
                                         <p style={{ color: '#888', fontSize: '0.8rem', textAlign: 'center', padding: '1rem' }}>
-                                            Enter coordinates or click "Use My GPS" to see location preview
+                                            Search a place or enter coordinates to see location
                                         </p>
                                     )}
                                 </div>
