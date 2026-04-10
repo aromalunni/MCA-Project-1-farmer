@@ -1,0 +1,545 @@
+/* Admin Dashboard Styles - Premium Modern Design */
+
+.admin-dashboard {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding-bottom: 60px;
+}
+
+.admin-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.spinner-large {
+    width: 80px;
+    height: 80px;
+    border: 8px solid rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+/* Header */
+.admin-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.admin-header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h1 {
+    font-size: 2.2rem;
+    color: #2D3748;
+    margin: 0 0 5px 0;
+    font-weight: 700;
+}
+
+.admin-header p {
+    color: #718096;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.admin-role-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    margin-right: 10px;
+}
+
+.admin-user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-logout-btn {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-logout-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Stats Grid */
+.admin-stats-grid {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    padding: 0 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea, #764ba2);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.stat-content h3 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: 700;
+    color: #2D3748;
+}
+
+.stat-content p {
+    margin: 5px 0 0 0;
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+.stat-card-blue .stat-icon {
+    color: #4299E1;
+    background: #EBF8FF;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.stat-card-orange .stat-icon {
+    color: #ED8936;
+    background: #FEEBC8;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.stat-card-green .stat-icon {
+    color: #48BB78;
+    background: #F0FFF4;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.stat-card-red .stat-icon {
+    color: #F56565;
+    background: #FFF5F5;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+/* Tabs */
+.admin-tabs {
+    max-width: 1400px;
+    margin: 0 auto 30px;
+    padding: 0 30px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #4A5568;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Content */
+.admin-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+/* Overview Section */
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.overview-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.overview-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.overview-card h3 {
+    color: #4A5568;
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+}
+
+.overview-value {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.overview-subtitle {
+    color: #A0AEC0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn.secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+/* Claims Section */
+.claims-section h2 {
+    color: white;
+    margin: 0 0 25px 0;
+    font-size: 1.8rem;
+}
+
+.claims-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.claim-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.claim-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.claim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #F7FAFC;
+}
+
+.claim-header h4 {
+    margin: 0 0 5px 0;
+    color: #2D3748;
+    font-size: 1.2rem;
+}
+
+.claim-meta {
+    color: #718096;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.claim-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.claim-badge.pending {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.claim-badge.approved {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.claim-badge.rejected {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+.claim-badge.paid {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+.claim-details {
+    margin-bottom: 20px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #F7FAFC;
+    color: #4A5568;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.claim-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.approve-btn,
+.reject-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.approve-btn {
+    background: linear-gradient(135deg, #48BB78, #38A169);
+    color: white;
+}
+
+.approve-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+}
+
+.reject-btn {
+    background: linear-gradient(135deg, #F56565, #E53E3E);
+    color: white;
+}
+
+.reject-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
+}
+
+/* Empty State */
+.empty-state {
+    background: white;
+    border-radius: 16px;
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    color: #2D3748;
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    color: #A0AEC0;
+    margin: 0;
+}
+
+/* Table */
+.claims-table-wrapper {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.claims-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.claims-table thead {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.claims-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.claims-table td {
+    padding: 15px;
+    border-bottom: 1px solid #F7FAFC;
+    color: #4A5568;
+}
+
+.claims-table tbody tr:hover {
+    background: #F7FAFC;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.6s ease-out backwards;
+}
+
+.table-row-animate {
+    animation: fadeIn 0.4s ease-out backwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .claims-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        width: 100%;
+    }
+
+    .claims-table-wrapper {
+        overflow-x: auto;
+    }
+}

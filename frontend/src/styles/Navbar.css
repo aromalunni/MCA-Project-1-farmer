@@ -1,0 +1,70 @@
+/* Navbar.css */
+.navbar-container {
+  transition: all 0.3s ease;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0.75rem 1rem !important;
+    margin: 0.5rem !important;
+  }
+
+  /* Show Toggle Button */
+  .mobile-menu-toggle {
+    display: block !important;
+    margin-right: 10px;
+    color: var(--paddy-green);
+  }
+
+  /* Hide Desktop Elements */
+  .desktop-only {
+    display: none;
+  }
+
+  /* Mobile Menu - Hidden by default, shown when open */
+  .navbar-menu {
+    display: none !important;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 1.5rem;
+    margin-top: 10px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 999;
+  }
+
+  .navbar-menu.open {
+    display: flex !important;
+    animation: slideDown 0.3s ease forwards;
+  }
+
+  /* Adjust Navbar Actions (User/Logout) */
+  .navbar-actions {
+    padding-left: 0.5rem !important;
+    border-left: none !important;
+    gap: 0.5rem !important;
+  }
+
+  .user-info {
+    display: none;
+    /* Hide full name on mobile to save space */
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
