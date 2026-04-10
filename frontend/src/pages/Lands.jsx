@@ -28,48 +28,60 @@ export default function Lands({ user }) {
 
     useEffect(() => { fetchLands(); }, []);
 
-    // Main map - show all lands
+    // Main map - always show Kerala, add land markers if available
     useEffect(() => {
         if (!showMap || !mapRef.current) return;
-        const validLands = lands.filter(l => l.latitude && l.longitude);
-        if (validLands.length === 0) return;
 
         if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
 
-        const center = [
-            validLands.reduce((s, l) => s + l.latitude, 0) / validLands.length,
-            validLands.reduce((s, l) => s + l.longitude, 0) / validLands.length
-        ];
+        const validLands = lands.filter(l => l.latitude && l.longitude);
 
-        const map = L.map(mapRef.current).setView(center, 13);
+        // Kerala center & bounds
+        const keralaCenter = [10.5, 76.3];
+        const keralaBounds = L.latLngBounds([8.17, 74.85], [12.79, 77.42]);
+
+        const center = validLands.length > 0
+            ? [validLands.reduce((s, l) => s + l.latitude, 0) / validLands.length, validLands.reduce((s, l) => s + l.longitude, 0) / validLands.length]
+            : keralaCenter;
+
+        const zoom = validLands.length > 0 ? 13 : 8;
+
+        const map = L.map(mapRef.current, {
+            maxBounds: keralaBounds,
+            maxBoundsViscosity: 1.0,
+            minZoom: 7
+        }).setView(center, zoom);
         mapInstanceRef.current = map;
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        const greenIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-        });
+        // Add land markers
+        if (validLands.length > 0) {
+            const greenIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
 
-        validLands.forEach(land => {
-            L.marker([land.latitude, land.longitude], { icon: greenIcon })
-                .addTo(map)
-                .bindPopup(`
-                    <div style="min-width:160px">
-                        <strong style="color:#00843D;font-size:1rem">Survey #${land.survey_number}</strong>
-                        <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
-                        <p style="margin:4px 0;font-size:0.85rem">Crop: <strong>${land.crop_type}</strong></p>
-                        <p style="margin:4px 0;font-size:0.85rem">Area: <strong>${land.area} ${land.unit}</strong></p>
-                        <p style="margin:4px 0;font-size:0.8rem;color:#888">GPS: ${land.latitude?.toFixed(4)}, ${land.longitude?.toFixed(4)}</p>
-                    </div>
-                `);
-        });
+            validLands.forEach(land => {
+                L.marker([land.latitude, land.longitude], { icon: greenIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="min-width:160px">
+                            <strong style="color:#00843D;font-size:1rem">Survey #${land.survey_number}</strong>
+                            <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+                            <p style="margin:4px 0;font-size:0.85rem">Crop: <strong>${land.crop_type}</strong></p>
+                            <p style="margin:4px 0;font-size:0.85rem">Area: <strong>${land.area} ${land.unit}</strong></p>
+                            <p style="margin:4px 0;font-size:0.8rem;color:#888">GPS: ${land.latitude?.toFixed(4)}, ${land.longitude?.toFixed(4)}</p>
+                        </div>
+                    `);
+            });
 
-        if (validLands.length > 1) {
-            map.fitBounds(L.latLngBounds(validLands.map(l => [l.latitude, l.longitude])), { padding: [30, 30] });
+            if (validLands.length > 1) {
+                map.fitBounds(L.latLngBounds(validLands.map(l => [l.latitude, l.longitude])), { padding: [30, 30] });
+            }
         }
 
         return () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; } };
@@ -83,7 +95,10 @@ export default function Lands({ user }) {
         if (isNaN(latNum) || isNaN(lngNum) || latNum === 0 || lngNum === 0) return;
 
         if (!formMapInstanceRef.current) {
-            formMapInstanceRef.current = L.map(formMapRef.current).setView([latNum, lngNum], 15);
+            const keralaBounds = L.latLngBounds([8.17, 74.85], [12.79, 77.42]);
+            formMapInstanceRef.current = L.map(formMapRef.current, {
+                maxBounds: keralaBounds, maxBoundsViscosity: 1.0, minZoom: 7
+            }).setView([latNum, lngNum], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OSM'
             }).addTo(formMapInstanceRef.current);
@@ -229,15 +244,7 @@ export default function Lands({ user }) {
                         </button>
                     </div>
 
-                    {validLands.length > 0 ? (
-                        <div ref={mapRef} style={{ height: '400px', width: '100%' }}></div>
-                    ) : (
-                        <div style={{ height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
-                            <MapPin size={48} style={{ marginBottom: '1rem' }} />
-                            <p>No lands with GPS coordinates. Add a land plot to see it on the map.</p>
-                            <p style={{ fontSize: '0.8rem' }}>Or enter coordinates above to find a location.</p>
-                        </div>
-                    )}
+                    <div ref={mapRef} style={{ height: '400px', width: '100%' }}></div>
                 </div>
             )}
 

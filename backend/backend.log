@@ -511,3 +511,11 @@ INFO:     127.0.0.1:55404 - "GET /api/lands/my HTTP/1.1" 200 OK
 INFO:     127.0.0.1:55404 - "GET /api/lands/my HTTP/1.1" 200 OK
 INFO:     127.0.0.1:55420 - "GET /api/lands/my HTTP/1.1" 200 OK
 INFO:     127.0.0.1:55420 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55439 - "OPTIONS /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55441 - "OPTIONS /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55441 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55439 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55474 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55481 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55505 - "GET /api/lands/my HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55510 - "GET /api/lands/my HTTP/1.1" 200 OK

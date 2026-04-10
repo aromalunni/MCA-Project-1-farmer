@@ -290,7 +290,8 @@ function KeralaDistrictMap({ risks }) {
     useEffect(() => {
         if (!mapRef.current || mapInstance.current) return;
 
-        const map = L.map(mapRef.current).setView([10.1, 76.4], 7.5);
+        const keralaBounds = L.latLngBounds([8.17, 74.85], [12.79, 77.42]);
+        const map = L.map(mapRef.current, { maxBounds: keralaBounds, maxBoundsViscosity: 1.0, minZoom: 7 }).setView([10.1, 76.4], 7.5);
         mapInstance.current = map;
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -339,7 +340,8 @@ function KeralaFullMap() {
     useEffect(() => {
         if (!mapRef.current || mapInstance.current) return;
 
-        const map = L.map(mapRef.current).setView([10.1, 76.4], 7.5);
+        const keralaBounds = L.latLngBounds([8.17, 74.85], [12.79, 77.42]);
+        const map = L.map(mapRef.current, { maxBounds: keralaBounds, maxBoundsViscosity: 1.0, minZoom: 7 }).setView([10.1, 76.4], 7.5);
         mapInstance.current = map;
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
