@@ -1,6 +1,8 @@
 // frontend/src/pages/KeralaStats.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { keralaService } from '../services/api';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -243,40 +245,128 @@ export default function KeralaStats() {
                     </div>
                 </div>
 
-                {/* District Hazard Map */}
-                <div className="glass-card">
-                    <h3 style={{ color: '#C62828', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <MapPin size={22} color="#D32F2F" /> District Hazard Map
-                    </h3>
-                    <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
-                        {risks.map((risk, idx) => (
-                            <div key={idx} style={{
-                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                padding: '1rem', marginBottom: '0.6rem', borderRadius: '12px',
-                                background: risk.risk_level === 'Critical' ? '#FFEBEE' : risk.risk_level === 'High' ? '#FFF3E0' : '#F1F8E9',
-                                borderLeft: `4px solid ${risk.risk_level === 'Critical' ? '#C62828' : risk.risk_level === 'High' ? '#F57C00' : '#43A047'}`
-                            }}>
-                                <div>
-                                    <h4 style={{ margin: 0, color: '#3E2723', fontSize: '0.95rem' }}>{risk.district}</h4>
-                                    <span style={{ fontSize: '0.8rem', color: '#5D4037', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                                        <AlertTriangle size={12} /> {risk.hazard}
-                                    </span>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{
-                                        fontWeight: 700, padding: '3px 10px', borderRadius: '20px', fontSize: '0.75rem',
-                                        background: 'rgba(255,255,255,0.6)',
-                                        color: risk.risk_level === 'Critical' ? '#C62828' : risk.risk_level === 'High' ? '#EF6C00' : '#2E7D32'
-                                    }}>
-                                        {risk.risk_level.toUpperCase()}
-                                    </div>
-                                    <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '3px' }}>{risk.monsoon_days} Rainy Days</div>
-                                </div>
-                            </div>
-                        ))}
+                {/* District Hazard Map - Interactive */}
+                <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+                    <div style={{ padding: '1rem 1.2rem', background: '#C62828', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <MapPin size={18} /> <strong>Kerala District Risk Map</strong>
                     </div>
+                    <KeralaDistrictMap risks={risks} />
                 </div>
+            </div>
+
+            {/* Full Width Kerala Map */}
+            <div className="glass-card" style={{ marginTop: '2rem', padding: 0, overflow: 'hidden' }}>
+                <div style={{ padding: '1rem 1.2rem', background: 'var(--paddy-green)', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <MapPin size={18} /> <strong>Kerala Agriculture Map - All Districts</strong>
+                </div>
+                <KeralaFullMap />
             </div>
         </div>
     );
+}
+
+// Kerala District coordinates for all 14 districts
+const KERALA_DISTRICTS = [
+    { name: 'Thiruvananthapuram', lat: 8.5241, lng: 76.9366, crops: 'Paddy, Coconut, Banana' },
+    { name: 'Kollam', lat: 8.8932, lng: 76.6141, crops: 'Cashew, Coconut, Rubber' },
+    { name: 'Pathanamthitta', lat: 9.2648, lng: 76.7870, crops: 'Rubber, Pepper, Coconut' },
+    { name: 'Alappuzha', lat: 9.4981, lng: 76.3388, crops: 'Paddy, Coconut, Fish farming' },
+    { name: 'Kottayam', lat: 9.5916, lng: 76.5222, crops: 'Rubber, Pepper, Coconut' },
+    { name: 'Idukki', lat: 9.9189, lng: 77.1025, crops: 'Cardamom, Tea, Pepper' },
+    { name: 'Ernakulam', lat: 9.9816, lng: 76.2999, crops: 'Coconut, Paddy, Banana' },
+    { name: 'Thrissur', lat: 10.5276, lng: 76.2144, crops: 'Paddy, Coconut, Banana' },
+    { name: 'Palakkad', lat: 10.7867, lng: 76.6548, crops: 'Paddy, Sugarcane, Coconut' },
+    { name: 'Malappuram', lat: 11.0510, lng: 76.0711, crops: 'Paddy, Arecanut, Pepper' },
+    { name: 'Kozhikode', lat: 11.2588, lng: 75.7804, crops: 'Coconut, Paddy, Pepper' },
+    { name: 'Wayanad', lat: 11.6854, lng: 76.1320, crops: 'Coffee, Pepper, Cardamom' },
+    { name: 'Kannur', lat: 11.8745, lng: 75.3704, crops: 'Coconut, Cashew, Pepper' },
+    { name: 'Kasaragod', lat: 12.4996, lng: 74.9869, crops: 'Coconut, Arecanut, Cashew' },
+];
+
+function KeralaDistrictMap({ risks }) {
+    const mapRef = useRef(null);
+    const mapInstance = useRef(null);
+
+    useEffect(() => {
+        if (!mapRef.current || mapInstance.current) return;
+
+        const map = L.map(mapRef.current).setView([10.1, 76.4], 7.5);
+        mapInstance.current = map;
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // Add risk markers for districts that have risk data
+        risks.forEach(risk => {
+            const district = KERALA_DISTRICTS.find(d =>
+                d.name.toLowerCase().includes(risk.district?.toLowerCase()) ||
+                risk.district?.toLowerCase().includes(d.name.toLowerCase())
+            );
+            if (!district) return;
+
+            const color = risk.risk_level === 'Critical' ? '#C62828' : risk.risk_level === 'High' ? '#F57C00' : '#43A047';
+
+            const circleMarker = L.circleMarker([district.lat, district.lng], {
+                radius: risk.risk_level === 'Critical' ? 14 : risk.risk_level === 'High' ? 11 : 8,
+                fillColor: color,
+                color: 'white',
+                weight: 2,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            circleMarker.bindPopup(`
+                <div style="min-width:180px">
+                    <strong style="font-size:1rem;color:${color}">${risk.district}</strong>
+                    <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+                    <p style="margin:4px 0;font-size:0.85rem">Hazard: <strong>${risk.hazard}</strong></p>
+                    <p style="margin:4px 0;font-size:0.85rem">Risk Level: <strong style="color:${color}">${risk.risk_level.toUpperCase()}</strong></p>
+                    <p style="margin:4px 0;font-size:0.85rem">Rainy Days: <strong>${risk.monsoon_days}</strong></p>
+                </div>
+            `);
+        });
+
+        return () => { if (mapInstance.current) { mapInstance.current.remove(); mapInstance.current = null; } };
+    }, [risks]);
+
+    return <div ref={mapRef} style={{ height: '350px', width: '100%' }}></div>;
+}
+
+function KeralaFullMap() {
+    const mapRef = useRef(null);
+    const mapInstance = useRef(null);
+
+    useEffect(() => {
+        if (!mapRef.current || mapInstance.current) return;
+
+        const map = L.map(mapRef.current).setView([10.1, 76.4], 7.5);
+        mapInstance.current = map;
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        const greenIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        KERALA_DISTRICTS.forEach(d => {
+            L.marker([d.lat, d.lng], { icon: greenIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <div style="min-width:180px">
+                        <strong style="color:#00843D;font-size:1.05rem">${d.name}</strong>
+                        <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+                        <p style="margin:4px 0;font-size:0.85rem">Major Crops:</p>
+                        <p style="margin:2px 0;font-size:0.85rem;font-weight:600">${d.crops}</p>
+                    </div>
+                `);
+        });
+
+        return () => { if (mapInstance.current) { mapInstance.current.remove(); mapInstance.current = null; } };
+    }, []);
+
+    return <div ref={mapRef} style={{ height: '450px', width: '100%' }}></div>;
 }
