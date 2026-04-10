@@ -16,6 +16,7 @@ import Profile from './pages/Profile';
 
 // Components
 import Navbar from './components/Navbar';
+import FarmerChatbot from './components/FarmerChatbot';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -91,6 +92,8 @@ export default function App() {
           <Route path="*" element={<Navigate to="/login" />} />
         )}
       </Routes>
+      {/* Chatbot for farmers only - not admin */}
+      {user && !isAdminOrOfficer && <FarmerChatbot />}
     </Router>
   );
 }

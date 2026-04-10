@@ -30,7 +30,9 @@ import { useToast } from '../components/Toast';
 export default function AdminDashboard({ user }) {
     const { t } = useLanguage();
     const toast = useToast();
-    const [activeTab, setActiveTab] = useState('claims');
+    // Read tab from URL query param
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    const [activeTab, setActiveTab] = useState(urlTab || 'claims');
     const [claims, setClaims] = useState([]);
     const [farmers, setFarmers] = useState([]);
     const [selectedFarmer, setSelectedFarmer] = useState(null);

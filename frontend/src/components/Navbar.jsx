@@ -30,14 +30,23 @@ export default function Navbar({ user, onLogout }) {
     navigate('/login');
   };
 
+  const adminRoles = ['admin', 'officer', 'district_admin', 'state_admin', 'super_admin'];
+
   const navItems = [
+    // Farmer nav items
     { label: t('dashboard'), path: '/', icon: <LayoutDashboard size={18} />, roles: ['farmer'] },
     { label: t('lands'), path: '/lands', icon: <Map size={18} />, roles: ['farmer'] },
     { label: t('upload'), path: '/upload', icon: <FileCheck size={18} />, roles: ['farmer'] },
     { label: t('claims'), path: '/claims', icon: <TrendingUp size={18} />, roles: ['farmer'] },
-    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} />, roles: ['farmer', 'admin', 'officer', 'district_admin', 'state_admin', 'super_admin'] },
-    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} />, roles: ['farmer', 'officer', 'district_admin', 'state_admin', 'super_admin'] },
-    { label: t('adminPanel'), path: '/admin', icon: <Shield size={18} />, activeRoles: ['admin', 'officer', 'district_admin', 'state_admin', 'super_admin'] }
+    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} />, roles: ['farmer'] },
+    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} />, roles: ['farmer'] },
+    // Admin nav items - direct tab links
+    { label: 'Claims', path: '/admin?tab=claims', icon: <FileCheck size={18} />, roles: adminRoles },
+    { label: 'Farmers', path: '/admin?tab=farmers', icon: <User size={18} />, roles: adminRoles },
+    { label: 'History', path: '/admin?tab=history', icon: <TrendingUp size={18} />, roles: adminRoles },
+    { label: 'Rate Settings', path: '/admin?tab=settings', icon: <Shield size={18} />, roles: adminRoles },
+    { label: t('profile') || 'Profile', path: '/profile', icon: <User size={18} />, roles: adminRoles },
+    { label: t('keralaStats'), path: '/kerala', icon: <Landmark size={18} />, roles: adminRoles },
   ];
 
   return (
@@ -74,8 +83,6 @@ export default function Navbar({ user, onLogout }) {
 
       <div className={`navbar-menu ${isOpen ? 'open' : ''}`} style={{ display: 'flex', gap: '1rem' }}>
         {navItems.filter(item => {
-          if (item.activeRoles) return item.activeRoles.includes(user?.role) || (user?.role === 'admin' && item.path === '/admin');
-          if (item.roles && user?.role === 'admin' && !item.roles.includes('admin')) return false;
           if (item.roles) return item.roles.includes(user?.role);
           return true;
         }).map((item, idx) => (
@@ -85,7 +92,7 @@ export default function Navbar({ user, onLogout }) {
             onClick={() => setIsOpen(false)}
             style={{
               textDecoration: 'none',
-              color: location.pathname === item.path ? 'var(--paddy-green)' : '#555',
+              color: (location.pathname + location.search) === item.path || location.pathname === item.path ? 'var(--paddy-green)' : '#555',
               fontWeight: 600,
               fontSize: '0.9rem',
               display: 'flex',
@@ -93,7 +100,7 @@ export default function Navbar({ user, onLogout }) {
               gap: '6px',
               padding: '8px 12px',
               borderRadius: '10px',
-              background: location.pathname === item.path ? 'rgba(0,132,61,0.05)' : 'transparent',
+              background: (location.pathname + location.search) === item.path || location.pathname === item.path ? 'rgba(0,132,61,0.05)' : 'transparent',
               transition: 'all 0.2s'
             }}
           >
