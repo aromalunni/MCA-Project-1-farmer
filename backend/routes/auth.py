@@ -135,7 +135,9 @@ def get_current_user(
                 "pin_code": farmer_profile.pin_code,
                 "verification_status": farmer_profile.verification_status,
                 "photo_url": farmer_profile.photo_url,
-                "ownership_proof_url": farmer_profile.ownership_proof_url
+                "ownership_proof_url": farmer_profile.ownership_proof_url,
+                "photo_data": farmer_profile.photo_data if farmer_profile.verification_status == "approved" else None,
+                "document_data": farmer_profile.document_data if farmer_profile.verification_status == "approved" else None
             }
     
     return user_data

@@ -310,9 +310,19 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                 {/* Documents Section - Farmer only */}
                 {profile?.role === 'farmer' && (
                     <div className="glass-card">
-                        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <FileText size={20} /> My Documents
                         </h3>
+
+                        {profile?.farmer_profile?.verification_status !== 'approved' && (
+                            <div style={{
+                                background: '#FFF3E0', padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1.2rem',
+                                fontSize: '0.85rem', color: '#E65100', display: 'flex', alignItems: 'center', gap: '8px'
+                            }}>
+                                <AlertCircle size={16} />
+                                Documents will be visible after admin approval. Current status: <strong>{profile?.farmer_profile?.verification_status || 'pending'}</strong>
+                            </div>
+                        )}
 
                         <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                             {/* Farmer Photo */}
@@ -320,19 +330,17 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                                 <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <Image size={16} color="var(--paddy-green)" /> Farmer Photo
                                 </p>
-                                {profile?.farmer_profile?.photo_url ? (
-                                    <div>
-                                        <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', background: '#eee' }}>
-                                            <img
-                                                src={profile.farmer_profile.photo_url}
-                                                alt="Farmer Photo"
-                                                style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }}
-                                                onError={(e) => {
-                                                    e.target.style.display = 'none';
-                                                    e.target.parentElement.innerHTML = '<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p style="margin:8px 0 0;font-size:0.8rem">Photo not available (server restarted)</p></div>';
-                                                }}
-                                            />
-                                        </div>
+                                {profile?.farmer_profile?.photo_data ? (
+                                    <div style={{ borderRadius: '10px', overflow: 'hidden' }}>
+                                        <img src={profile.farmer_profile.photo_data} alt="Farmer Photo"
+                                            style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }} />
+                                    </div>
+                                ) : profile?.farmer_profile?.photo_url ? (
+                                    <div style={{ textAlign: 'center', padding: '2rem', background: '#FFF8E1', borderRadius: '10px' }}>
+                                        <Image size={40} color="#E65100" />
+                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', color: '#E65100' }}>
+                                            {profile.farmer_profile.verification_status === 'approved' ? 'Photo uploaded' : 'Awaiting admin approval'}
+                                        </p>
                                     </div>
                                 ) : (
                                     <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>
@@ -347,30 +355,22 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                                 <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <FileText size={16} color="#1565C0" /> Land Document
                                 </p>
-                                {profile?.farmer_profile?.ownership_proof_url ? (
-                                    <div>
-                                        {profile.farmer_profile.ownership_proof_url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                                            <div style={{ borderRadius: '10px', overflow: 'hidden', background: '#eee' }}>
-                                                <img
-                                                    src={profile.farmer_profile.ownership_proof_url}
-                                                    alt="Land Document"
-                                                    style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }}
-                                                    onError={(e) => {
-                                                        e.target.style.display = 'none';
-                                                        e.target.parentElement.innerHTML = '<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888;background:#E3F2FD"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p style="margin:8px 0 0;font-size:0.8rem">Document not available (server restarted)</p></div>';
-                                                    }}
-                                                />
-                                            </div>
+                                {profile?.farmer_profile?.document_data ? (
+                                    <div style={{ borderRadius: '10px', overflow: 'hidden' }}>
+                                        {profile.farmer_profile.document_data.startsWith('data:image') ? (
+                                            <img src={profile.farmer_profile.document_data} alt="Land Document"
+                                                style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }} />
                                         ) : (
-                                            <div style={{ background: '#E3F2FD', borderRadius: '10px', padding: '2rem', textAlign: 'center', height: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                                <FileText size={48} color="#1565C0" />
-                                                <p style={{ fontSize: '0.85rem', margin: '0.5rem 0 0', fontWeight: 600, color: '#1565C0' }}>PDF Document</p>
-                                                <a href={profile.farmer_profile.ownership_proof_url} target="_blank" rel="noopener noreferrer"
-                                                    style={{ fontSize: '0.8rem', color: '#1565C0', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <ExternalLink size={12} /> Open PDF
-                                                </a>
-                                            </div>
+                                            <iframe src={profile.farmer_profile.document_data}
+                                                style={{ width: '100%', height: '220px', border: 'none' }} title="Land Document" />
                                         )}
+                                    </div>
+                                ) : profile?.farmer_profile?.ownership_proof_url ? (
+                                    <div style={{ textAlign: 'center', padding: '2rem', background: '#E3F2FD', borderRadius: '10px' }}>
+                                        <FileText size={40} color="#1565C0" />
+                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', color: '#1565C0' }}>
+                                            {profile.farmer_profile.verification_status === 'approved' ? 'Document uploaded' : 'Awaiting admin approval'}
+                                        </p>
                                     </div>
                                 ) : (
                                     <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>

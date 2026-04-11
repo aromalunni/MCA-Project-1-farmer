@@ -103,22 +103,20 @@ async def register_farmer(
     photo_url = None
     doc_url = None
     
-    upload_dir = "static/uploads"
-    os.makedirs(upload_dir, exist_ok=True)
-    
+    # 2. Save files as base64 in database (persists on Render free tier)
+    import base64
+    photo_b64 = None
+    doc_b64 = None
+
     if farmer_photo:
-        photo_filename = f"farmer_{new_user.id}_{int(datetime.now().timestamp())}_{farmer_photo.filename}"
-        photo_path = os.path.join(upload_dir, photo_filename)
-        with open(photo_path, "wb") as buffer:
-            shutil.copyfileobj(farmer_photo.file, buffer)
-        photo_url = f"/static/uploads/{photo_filename}"
-        
+        photo_bytes = await farmer_photo.read()
+        photo_b64 = f"data:{farmer_photo.content_type or 'image/jpeg'};base64,{base64.b64encode(photo_bytes).decode()}"
+        photo_url = farmer_photo.filename
+
     if land_document:
-        doc_filename = f"land_{new_user.id}_{int(datetime.now().timestamp())}_{land_document.filename}"
-        doc_path = os.path.join(upload_dir, doc_filename)
-        with open(doc_path, "wb") as buffer:
-            shutil.copyfileobj(land_document.file, buffer)
-        doc_url = f"/static/uploads/{doc_filename}"
+        doc_bytes = await land_document.read()
+        doc_b64 = f"data:{land_document.content_type or 'application/pdf'};base64,{base64.b64encode(doc_bytes).decode()}"
+        doc_url = land_document.filename
 
     # 3. Create Farmer Profile
     new_profile = FarmerProfile(
@@ -129,6 +127,8 @@ async def register_farmer(
         pin_code=pin_code,
         photo_url=photo_url,
         ownership_proof_url=doc_url,
+        photo_data=photo_b64,
+        document_data=doc_b64,
         verification_status="pending"
     )
     db.add(new_profile)

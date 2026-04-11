@@ -38,6 +38,8 @@ class FarmerProfile(Base):
     pin_code = Column(String)
     photo_url = Column(String)
     ownership_proof_url = Column(String)
+    photo_data = Column(Text)  # base64 encoded photo
+    document_data = Column(Text)  # base64 encoded document
     verification_status = Column(String, default="pending")  # pending, approved, rejected
     created_at = Column(DateTime, default=datetime.utcnow)
     

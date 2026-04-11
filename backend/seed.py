@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from config import SessionLocal, engine, Base
 from models import User, InsuranceRate, Crop
 from services.auth import auth_service
@@ -11,6 +12,16 @@ except Exception as e:
 
 def seed_users():
     db = SessionLocal()
+
+    # Add new columns if they don't exist
+    try:
+        db.execute(text("ALTER TABLE farmer_profiles ADD COLUMN photo_data TEXT"))
+        db.commit()
+    except: db.rollback()
+    try:
+        db.execute(text("ALTER TABLE farmer_profiles ADD COLUMN document_data TEXT"))
+        db.commit()
+    except: db.rollback()
     
     # 1. Create Admin (admin/admin)
     admin_user = db.query(User).filter(User.username == "admin").first()
