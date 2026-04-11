@@ -1,7 +1,7 @@
 // frontend/src/pages/Profile.jsx
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import { User, Lock, MapPin, Phone, Mail, Save, Edit2, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Lock, MapPin, Phone, Mail, Save, Edit2, CheckCircle, AlertCircle, FileText, Image, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Profile({ user, setUser }) { // Updated destructuring
@@ -134,7 +134,7 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                 </div>
             )}
 
-            <div className="gov-grid" style={{ gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+            <div className="gov-grid" style={{ gridTemplateColumns: '1fr', gap: '2rem' }}>
                 {/* Profile Information */}
                 <div className="glass-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -299,10 +299,75 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                             <strong>Role:</strong> {profile?.role?.replace('_', ' ').toUpperCase()}
                         </p>
                         <p style={{ fontSize: '0.85rem', margin: '8px 0 0', opacity: 0.7 }}>
+                            <strong>Email:</strong> {profile?.email || 'N/A'}
+                        </p>
+                        <p style={{ fontSize: '0.85rem', margin: '8px 0 0', opacity: 0.7 }}>
                             <strong>Member Since:</strong> {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}
                         </p>
                     </div>
                 </div>
+
+                {/* Documents Section - Farmer only */}
+                {profile?.role === 'farmer' && (
+                    <div className="glass-card">
+                        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <FileText size={20} /> My Documents
+                        </h3>
+
+                        <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                            {/* Farmer Photo */}
+                            <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '1.2rem', border: '1px solid #eee' }}>
+                                <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <Image size={16} color="var(--paddy-green)" /> Farmer Photo
+                                </p>
+                                {profile?.farmer_profile?.photo_url ? (
+                                    <div>
+                                        <img
+                                            src={profile.farmer_profile.photo_url}
+                                            alt="Farmer"
+                                            style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }}
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                                        />
+                                        <p style={{ display: 'none', fontSize: '0.8rem', color: '#888', textAlign: 'center' }}>Photo not available on server</p>
+                                        <a href={profile.farmer_profile.photo_url} target="_blank" rel="noopener noreferrer"
+                                            style={{ fontSize: '0.78rem', color: 'var(--paddy-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <ExternalLink size={12} /> View Full Size
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.4 }}>
+                                        <User size={40} />
+                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No photo uploaded</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Land Document */}
+                            <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '1.2rem', border: '1px solid #eee' }}>
+                                <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <FileText size={16} color="#1565C0" /> Land Document
+                                </p>
+                                {profile?.farmer_profile?.ownership_proof_url ? (
+                                    <div>
+                                        <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1.5rem', textAlign: 'center', marginBottom: '0.5rem' }}>
+                                            <FileText size={40} color="#1565C0" />
+                                            <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', fontWeight: 600, color: '#1565C0' }}>Document Uploaded</p>
+                                        </div>
+                                        <a href={profile.farmer_profile.ownership_proof_url} target="_blank" rel="noopener noreferrer"
+                                            style={{ fontSize: '0.78rem', color: '#1565C0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <ExternalLink size={12} /> View / Download
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.4 }}>
+                                        <FileText size={40} />
+                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No document uploaded</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
