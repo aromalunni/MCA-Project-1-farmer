@@ -6,30 +6,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PMFBY Crop Insurance System</title>
     <style>
-      /* Mobile Responsive */
+      /* ====== ALL DEVICE RESPONSIVE ====== */
+
+      /* Large Desktop (1400px+) */
+      @media (min-width: 1400px) {
+        .dashboard-container { max-width: 1400px !important; }
+      }
+
+      /* Desktop (1024px - 1399px) - default styles apply */
+
+      /* Small Desktop / Tablet Landscape (768px - 1024px) */
+      @media (max-width: 1024px) {
+        .gov-grid, .grid-2 { grid-template-columns: 1fr 1fr !important; }
+        .dashboard-container { padding: 1.2rem !important; }
+        .glass-card { padding: 1.2rem !important; }
+        h1 { font-size: 1.5rem !important; }
+      }
+
+      /* Tablet Portrait (600px - 768px) */
       @media (max-width: 768px) {
         .gov-grid, .grid-2, .responsive-row-claim { grid-template-columns: 1fr !important; }
-        .dashboard-container { padding: 0.6rem !important; }
-        .glass-card { padding: 1rem !important; max-width: 100% !important; }
-        .glass-card > div { max-width: 100% !important; }
+        .dashboard-container { padding: 0.6rem !important; max-width: 100% !important; }
+        .glass-card { padding: 1rem !important; max-width: 100% !important; border-radius: 12px !important; }
         h1 { font-size: 1.2rem !important; }
         h2 { font-size: 1rem !important; }
         h3 { font-size: 0.9rem !important; }
-        table { font-size: 0.75rem !important; display: block !important; overflow-x: auto !important; }
+        p { font-size: 0.85rem !important; }
+        table { font-size: 0.75rem !important; display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
         th, td { padding: 5px 6px !important; white-space: nowrap !important; }
         .upload-box { height: 180px !important; }
         .btn-gov { padding: 0.5rem 0.8rem !important; font-size: 0.8rem !important; }
-        .gov-input { padding: 0.6rem !important; font-size: 0.85rem !important; }
+        .gov-input { padding: 0.6rem !important; font-size: 0.85rem !important; width: 100% !important; box-sizing: border-box !important; }
         .badge { font-size: 0.6rem !important; padding: 2px 6px !important; }
-        /* Force all display:grid with inline styles to 1fr */
-        .m-1col { grid-template-columns: 1fr !important; }
+        /* Navbar actions compact */
+        .navbar-actions { gap: 0.5rem !important; padding-left: 0.5rem !important; }
+        /* Map height */
+        div[style*="height: 400px"] { height: 280px !important; }
+        div[style*="height: 380px"] { height: 260px !important; }
+        div[style*="height: 450px"] { height: 300px !important; }
+        div[style*="height: 350px"] { height: 250px !important; }
       }
-      @media (max-width: 480px) {
-        .dashboard-container { padding: 0.4rem !important; }
-        .glass-card { padding: 0.7rem !important; border-radius: 10px !important; }
-        h1 { font-size: 1.05rem !important; }
+
+      /* Large Phone (480px - 600px) */
+      @media (max-width: 600px) {
+        .dashboard-container { padding: 0.5rem !important; }
+        .glass-card { padding: 0.8rem !important; }
+        h1 { font-size: 1.1rem !important; }
         h2 { font-size: 0.95rem !important; }
-        .btn-gov { padding: 0.4rem 0.6rem !important; font-size: 0.75rem !important; }
+        h3 { font-size: 0.85rem !important; }
+        .btn-gov { padding: 0.45rem 0.7rem !important; font-size: 0.78rem !important; }
+        .gov-input { padding: 0.55rem !important; font-size: 0.82rem !important; }
+        /* Receipt modal */
+        div[style*="maxWidth: '600px'"] { max-width: 100% !important; }
+        div[style*="max-width: 600px"] { max-width: 100% !important; }
+      }
+
+      /* Small Phone (max 480px) */
+      @media (max-width: 480px) {
+        .dashboard-container { padding: 0.3rem !important; }
+        .glass-card { padding: 0.6rem !important; border-radius: 8px !important; }
+        h1 { font-size: 1rem !important; }
+        h2 { font-size: 0.9rem !important; }
+        h3 { font-size: 0.82rem !important; }
+        p { font-size: 0.8rem !important; }
+        .btn-gov { padding: 0.4rem 0.5rem !important; font-size: 0.72rem !important; }
+        .gov-input { padding: 0.5rem !important; font-size: 0.8rem !important; }
+        .badge { font-size: 0.55rem !important; padding: 1px 4px !important; }
+        .upload-box { height: 150px !important; }
+        table { font-size: 0.68rem !important; }
+        th, td { padding: 4px 5px !important; }
+        /* Chatbot smaller */
+        div[style*="width: '370px'"] { width: 100% !important; max-width: calc(100vw - 16px) !important; }
+        div[style*="width: 370px"] { width: 100% !important; max-width: calc(100vw - 16px) !important; }
+      }
+
+      /* Extra Small (max 360px - old phones) */
+      @media (max-width: 360px) {
+        .dashboard-container { padding: 0.2rem !important; }
+        .glass-card { padding: 0.5rem !important; }
+        h1 { font-size: 0.9rem !important; }
+        .btn-gov { font-size: 0.68rem !important; }
+        .navbar-container { padding: 0.5rem 0.8rem !important; margin: 0.3rem !important; }
       }
     </style>
   </head>
@@ -37,25 +94,34 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      function fixMobileGrids() {
-        var isMobile = window.innerWidth <= 768;
+      function fixResponsive() {
+        var w = window.innerWidth;
+        var isMobile = w <= 768;
+        var isTablet = w > 768 && w <= 1024;
+
         document.querySelectorAll('[style]').forEach(function(el) {
           var s = el.style;
-          // Fix grids
-          if (s.gridTemplateColumns && s.gridTemplateColumns !== '1fr' && isMobile) {
-            if (!el.dataset.dg) el.dataset.dg = s.gridTemplateColumns;
-            s.gridTemplateColumns = '1fr';
+
+          // Grids: 1fr on mobile, 1fr 1fr on tablet, restore on desktop
+          if (s.gridTemplateColumns) {
+            if (isMobile && s.gridTemplateColumns !== '1fr') {
+              if (!el.dataset.dg) el.dataset.dg = s.gridTemplateColumns;
+              s.gridTemplateColumns = '1fr';
+            } else if (isTablet && el.dataset.dg && el.dataset.dg.split('1fr').length > 3) {
+              s.gridTemplateColumns = '1fr 1fr';
+            } else if (!isMobile && !isTablet && el.dataset.dg) {
+              s.gridTemplateColumns = el.dataset.dg;
+              delete el.dataset.dg;
+            }
           }
-          if (!isMobile && el.dataset.dg) {
-            s.gridTemplateColumns = el.dataset.dg;
-            delete el.dataset.dg;
-          }
-          // Fix flex gaps that overflow
-          if (isMobile && s.display === 'flex' && s.gap) {
+
+          // Flex wrap on mobile/tablet
+          if ((isMobile || isTablet) && s.display === 'flex' && s.gap) {
             s.flexWrap = 'wrap';
           }
-          // Fix max-width on cards
-          if (isMobile && s.maxWidth && s.maxWidth !== '100%') {
+
+          // Max-width → 100% on mobile
+          if (isMobile && s.maxWidth && s.maxWidth !== '100%' && !s.maxWidth.includes('vw')) {
             if (!el.dataset.dmw) el.dataset.dmw = s.maxWidth;
             s.maxWidth = '100%';
           }
@@ -63,16 +129,27 @@
             s.maxWidth = el.dataset.dmw;
             delete el.dataset.dmw;
           }
-          // Fix fixed padding that's too big
+
+          // Reduce big padding on mobile
           if (isMobile && s.padding) {
             var p = parseFloat(s.padding);
-            if (p > 2) { if (!el.dataset.dp) el.dataset.dp = s.padding; s.padding = '1rem'; }
+            if (p > 2) { if (!el.dataset.dp) el.dataset.dp = s.padding; s.padding = '0.8rem'; }
           }
           if (!isMobile && el.dataset.dp) { s.padding = el.dataset.dp; delete el.dataset.dp; }
+
+          // Font size reduction on small phones
+          if (w <= 480 && s.fontSize) {
+            var fs = parseFloat(s.fontSize);
+            if (fs > 1.5 && s.fontSize.includes('rem')) {
+              if (!el.dataset.dfs) el.dataset.dfs = s.fontSize;
+              s.fontSize = (fs * 0.7) + 'rem';
+            }
+          }
+          if (w > 480 && el.dataset.dfs) { s.fontSize = el.dataset.dfs; delete el.dataset.dfs; }
         });
       }
-      window.addEventListener('resize', fixMobileGrids);
-      setInterval(fixMobileGrids, 500);
+      window.addEventListener('resize', fixResponsive);
+      setInterval(fixResponsive, 500);
       // Initial run after React renders
       setTimeout(fixMobileGrids, 500);
     </script>
