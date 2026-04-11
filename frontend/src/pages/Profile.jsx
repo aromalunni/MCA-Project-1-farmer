@@ -1,7 +1,7 @@
 // frontend/src/pages/Profile.jsx
 import { useState, useEffect } from 'react';
-import api from '../services/api';
-import { User, Lock, MapPin, Phone, Mail, Save, Edit2, CheckCircle, AlertCircle, FileText, Image, ExternalLink } from 'lucide-react';
+import api, { authService } from '../services/api';
+import { User, Lock, MapPin, Phone, Mail, Save, Edit2, CheckCircle, AlertCircle, FileText, Image, Upload, Loader } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Profile({ user, setUser }) { // Updated destructuring
@@ -10,6 +10,7 @@ export default function Profile({ user, setUser }) { // Updated destructuring
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [uploading, setUploading] = useState('');
     const [message, setMessage] = useState({ type: '', text: '' });
 
     const [editData, setEditData] = useState({
@@ -100,6 +101,25 @@ export default function Profile({ user, setUser }) { // Updated destructuring
         } catch (err) {
             setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to change password' });
         }
+    };
+
+    const handleDocUpload = async (e, docType) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setUploading(docType);
+        try {
+            const formData = new FormData();
+            formData.append('doc_type', docType);
+            formData.append('file', file);
+            await authService.uploadDocument(formData);
+            setMessage({ type: 'success', text: `${docType === 'photo' ? 'Photo' : 'Document'} uploaded! Awaiting admin approval.` });
+            fetchProfile();
+            setTimeout(() => setMessage({ type: '', text: '' }), 4000);
+        } catch (err) {
+            setMessage({ type: 'error', text: 'Upload failed: ' + (err.response?.data?.detail || err.message) });
+        }
+        setUploading('');
+        e.target.value = '';
     };
 
     if (loading) {
@@ -314,68 +334,97 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                             <FileText size={20} /> My Documents
                         </h3>
 
-                        {profile?.farmer_profile?.verification_status !== 'approved' && (
-                            <div style={{
-                                background: '#FFF3E0', padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1.2rem',
-                                fontSize: '0.85rem', color: '#E65100', display: 'flex', alignItems: 'center', gap: '8px'
-                            }}>
-                                <AlertCircle size={16} />
-                                Documents will be visible after admin approval. Current status: <strong>{profile?.farmer_profile?.verification_status || 'pending'}</strong>
-                            </div>
-                        )}
+                        {/* Status Banner */}
+                        <div style={{
+                            background: profile?.farmer_profile?.verification_status === 'approved' ? '#E8F5E9' : '#FFF3E0',
+                            padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1.2rem',
+                            fontSize: '0.85rem',
+                            color: profile?.farmer_profile?.verification_status === 'approved' ? '#2E7D32' : '#E65100',
+                            display: 'flex', alignItems: 'center', gap: '8px'
+                        }}>
+                            {profile?.farmer_profile?.verification_status === 'approved' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+                            {profile?.farmer_profile?.verification_status === 'approved'
+                                ? 'Your documents are approved. You can upload new documents anytime.'
+                                : `Documents are awaiting admin approval. Status: ${profile?.farmer_profile?.verification_status || 'pending'}`
+                            }
+                        </div>
 
                         <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                             {/* Farmer Photo */}
                             <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '1.2rem', border: '1px solid #eee' }}>
-                                <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Image size={16} color="var(--paddy-green)" /> Farmer Photo
-                                </p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                                    <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Image size={16} color="var(--paddy-green)" /> Farmer Photo
+                                    </p>
+                                    <label htmlFor="profile_photo_upload" style={{
+                                        background: 'var(--paddy-green)', color: 'white', padding: '4px 10px',
+                                        borderRadius: '6px', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', gap: '4px'
+                                    }}>
+                                        {uploading === 'photo' ? <Loader className="spin" size={12} /> : <Upload size={12} />}
+                                        {profile?.farmer_profile?.photo_data ? 'Replace' : 'Upload'}
+                                    </label>
+                                    <input type="file" id="profile_photo_upload" hidden accept="image/*"
+                                        onChange={(e) => handleDocUpload(e, 'photo')} />
+                                </div>
+
                                 {profile?.farmer_profile?.photo_data ? (
                                     <div style={{ borderRadius: '10px', overflow: 'hidden' }}>
                                         <img src={profile.farmer_profile.photo_data} alt="Farmer Photo"
-                                            style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }} />
+                                            style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
                                     </div>
                                 ) : profile?.farmer_profile?.photo_url ? (
-                                    <div style={{ textAlign: 'center', padding: '2rem', background: '#FFF8E1', borderRadius: '10px' }}>
-                                        <Image size={40} color="#E65100" />
-                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', color: '#E65100' }}>
-                                            {profile.farmer_profile.verification_status === 'approved' ? 'Photo uploaded' : 'Awaiting admin approval'}
-                                        </p>
+                                    <div style={{ textAlign: 'center', padding: '1.5rem', background: '#FFF8E1', borderRadius: '10px' }}>
+                                        <Image size={36} color="#E65100" />
+                                        <p style={{ fontSize: '0.78rem', margin: '0.5rem 0 0', color: '#E65100', fontWeight: 500 }}>Awaiting admin approval</p>
+                                        <p style={{ fontSize: '0.7rem', margin: '0.3rem 0 0', opacity: 0.6 }}>{profile.farmer_profile.photo_url}</p>
                                     </div>
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>
-                                        <User size={48} />
-                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No photo uploaded</p>
+                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.3, background: '#f5f5f5', borderRadius: '10px' }}>
+                                        <User size={44} />
+                                        <p style={{ fontSize: '0.78rem', margin: '0.5rem 0 0' }}>No photo yet</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Land Document */}
                             <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '1.2rem', border: '1px solid #eee' }}>
-                                <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <FileText size={16} color="#1565C0" /> Land Document
-                                </p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                                    <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <FileText size={16} color="#1565C0" /> Land Document
+                                    </p>
+                                    <label htmlFor="profile_doc_upload" style={{
+                                        background: '#1565C0', color: 'white', padding: '4px 10px',
+                                        borderRadius: '6px', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', gap: '4px'
+                                    }}>
+                                        {uploading === 'document' ? <Loader className="spin" size={12} /> : <Upload size={12} />}
+                                        {profile?.farmer_profile?.document_data ? 'Replace' : 'Upload'}
+                                    </label>
+                                    <input type="file" id="profile_doc_upload" hidden accept="image/*,.pdf"
+                                        onChange={(e) => handleDocUpload(e, 'document')} />
+                                </div>
+
                                 {profile?.farmer_profile?.document_data ? (
                                     <div style={{ borderRadius: '10px', overflow: 'hidden' }}>
                                         {profile.farmer_profile.document_data.startsWith('data:image') ? (
                                             <img src={profile.farmer_profile.document_data} alt="Land Document"
-                                                style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }} />
+                                                style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
                                         ) : (
                                             <iframe src={profile.farmer_profile.document_data}
-                                                style={{ width: '100%', height: '220px', border: 'none' }} title="Land Document" />
+                                                style={{ width: '100%', height: '200px', border: 'none' }} title="Document" />
                                         )}
                                     </div>
                                 ) : profile?.farmer_profile?.ownership_proof_url ? (
-                                    <div style={{ textAlign: 'center', padding: '2rem', background: '#E3F2FD', borderRadius: '10px' }}>
-                                        <FileText size={40} color="#1565C0" />
-                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', color: '#1565C0' }}>
-                                            {profile.farmer_profile.verification_status === 'approved' ? 'Document uploaded' : 'Awaiting admin approval'}
-                                        </p>
+                                    <div style={{ textAlign: 'center', padding: '1.5rem', background: '#E3F2FD', borderRadius: '10px' }}>
+                                        <FileText size={36} color="#1565C0" />
+                                        <p style={{ fontSize: '0.78rem', margin: '0.5rem 0 0', color: '#1565C0', fontWeight: 500 }}>Awaiting admin approval</p>
+                                        <p style={{ fontSize: '0.7rem', margin: '0.3rem 0 0', opacity: 0.6 }}>{profile.farmer_profile.ownership_proof_url}</p>
                                     </div>
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>
-                                        <FileText size={48} />
-                                        <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No document uploaded</p>
+                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.3, background: '#f5f5f5', borderRadius: '10px' }}>
+                                        <FileText size={44} />
+                                        <p style={{ fontSize: '0.78rem', margin: '0.5rem 0 0' }}>No document yet</p>
                                     </div>
                                 )}
                             </div>

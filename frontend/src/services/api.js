@@ -23,6 +23,7 @@ export const authService = {
   registerFarmer: (formData) => api.post('/farmer/register', formData),
   login: (credentials) => api.post('/auth/login', credentials),
   getCurrentUser: () => api.get('/auth/me'),
+  uploadDocument: (formData) => api.post('/farmer/upload-document', formData),
 };
 
 // Land Management

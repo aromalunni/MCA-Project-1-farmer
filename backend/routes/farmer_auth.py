@@ -162,10 +162,42 @@ from dependencies import get_current_user
 from schemas import UserResponse, FarmerProfileResponse
 from typing import List
 from pydantic import BaseModel
+import base64
 
 class VerificationUpdate(BaseModel):
     status: str
     reason: Optional[str] = None
+
+@router.post("/upload-document")
+async def upload_farmer_document(
+    doc_type: str = Form(...),  # "photo" or "document"
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Upload/replace farmer photo or land document"""
+    profile = db.query(FarmerProfile).filter(FarmerProfile.user_id == current_user.id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Farmer profile not found")
+
+    # Read file and convert to base64
+    file_bytes = await file.read()
+    b64_data = f"data:{file.content_type or 'image/jpeg'};base64,{base64.b64encode(file_bytes).decode()}"
+
+    if doc_type == "photo":
+        profile.photo_data = b64_data
+        profile.photo_url = file.filename
+    elif doc_type == "document":
+        profile.document_data = b64_data
+        profile.ownership_proof_url = file.filename
+    else:
+        raise HTTPException(status_code=400, detail="doc_type must be 'photo' or 'document'")
+
+    # Reset verification to pending when new document uploaded
+    profile.verification_status = "pending"
+    db.commit()
+
+    return {"message": f"{doc_type.capitalize()} uploaded successfully. Awaiting admin approval."}
 
 @router.get("/all", response_model=List[dict])
 def get_all_farmers(

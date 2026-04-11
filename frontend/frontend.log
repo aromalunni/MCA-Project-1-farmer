@@ -494,3 +494,8 @@ Re-optimizing dependencies because lockfile has changed
 6:05:27 PM [vite] hmr update /src/pages/Profile.jsx
 6:08:45 PM [vite] hmr update /src/pages/Profile.jsx
 6:14:22 PM [vite] hmr update /src/pages/Profile.jsx
+6:22:02 PM [vite] hmr update /src/pages/Login.jsx, /src/pages/Register.jsx, /src/pages/Claims.jsx, /src/pages/KeralaStats.jsx, /src/pages/Home.jsx, /src/pages/Lands.jsx, /src/pages/Upload.jsx, /src/pages/Profile.jsx, /src/pages/AdminDashboard.jsx
+6:22:12 PM [vite] hmr update /src/pages/Profile.jsx
+6:22:21 PM [vite] hmr update /src/pages/Profile.jsx
+6:22:32 PM [vite] hmr update /src/pages/Profile.jsx
+6:23:17 PM [vite] hmr update /src/pages/Profile.jsx
