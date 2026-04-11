@@ -96,12 +96,14 @@ export default function Navbar({ user, onLogout }) {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <div style={{ background: 'var(--paddy-green)', color: 'white', padding: '8px', borderRadius: '12px' }}>
-          <Shield size={24} />
-        </div>
-        <div>
-          <h2 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--deep-forest)', letterSpacing: '-0.5px' }}>PMFBY</h2>
-          <p className="desktop-only" style={{ margin: 0, fontSize: '0.6rem', opacity: 0.6, fontWeight: 700, textTransform: 'uppercase' }}>{t('govtKerala')}</p>
+        <div onClick={() => { navigate(isAdminOrOfficer ? '/admin?tab=claims' : '/'); window.scrollTo(0,0); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <div style={{ background: 'var(--paddy-green)', color: 'white', padding: '8px', borderRadius: '12px' }}>
+            <Shield size={24} />
+          </div>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--deep-forest)', letterSpacing: '-0.5px' }}>PMFBY</h2>
+            <p className="desktop-only" style={{ margin: 0, fontSize: '0.6rem', opacity: 0.6, fontWeight: 700, textTransform: 'uppercase' }}>{t('govtKerala')}</p>
+          </div>
         </div>
       </div>
 
