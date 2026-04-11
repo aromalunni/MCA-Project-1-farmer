@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import '../styles/Navbar.css';
 import { useLanguage } from '../context/LanguageContext';
 import {
   Shield,
@@ -104,7 +105,7 @@ export default function Navbar({ user, onLogout }) {
         </div>
       </div>
 
-      <div className={`navbar-menu ${isOpen ? 'open' : ''}`} style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className={`navbar-menu ${isOpen ? 'open' : ''}`}>
         {navItems.map((item, idx) => (
           <button
             key={idx}
