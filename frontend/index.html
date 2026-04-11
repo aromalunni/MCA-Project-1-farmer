@@ -6,52 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PMFBY Crop Insurance System</title>
     <style>
-      /* Mobile Responsive Overrides for React inline styles */
+      /* Mobile Responsive */
       @media (max-width: 768px) {
-        /* All grids → single column */
-        .gov-grid, .grid-2, .responsive-row-claim,
-        div[style] > div[style*="display"] {
-          grid-template-columns: 1fr !important;
-        }
-
-        /* Dashboard padding */
-        .dashboard-container {
-          padding: 0.8rem !important;
-        }
-
-        /* Cards */
-        .glass-card {
-          padding: 1rem !important;
-        }
-
-        /* Headings */
-        h1 { font-size: 1.3rem !important; }
-        h2 { font-size: 1.1rem !important; }
-
-        /* Tables scroll horizontally */
-        table { font-size: 0.78rem !important; }
-        th, td { padding: 6px 8px !important; }
-
-        /* Upload box smaller */
-        .upload-box { height: 200px !important; }
-
-        /* Login/Register page */
-        .glass-card[style] {
-          max-width: 100% !important;
-          padding: 1.5rem !important;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .dashboard-container { padding: 0.5rem !important; }
-        .glass-card { padding: 0.8rem !important; border-radius: 10px !important; }
-        h1 { font-size: 1.1rem !important; }
+        .gov-grid, .grid-2, .responsive-row-claim { grid-template-columns: 1fr !important; }
+        .dashboard-container { padding: 0.6rem !important; }
+        .glass-card { padding: 1rem !important; max-width: 100% !important; }
+        .glass-card > div { max-width: 100% !important; }
+        h1 { font-size: 1.2rem !important; }
         h2 { font-size: 1rem !important; }
         h3 { font-size: 0.9rem !important; }
-        .btn-gov { padding: 0.6rem 0.8rem !important; font-size: 0.8rem !important; }
-        .gov-input { padding: 0.7rem !important; font-size: 0.85rem !important; }
+        table { font-size: 0.75rem !important; display: block !important; overflow-x: auto !important; }
+        th, td { padding: 5px 6px !important; white-space: nowrap !important; }
         .upload-box { height: 180px !important; }
+        .btn-gov { padding: 0.5rem 0.8rem !important; font-size: 0.8rem !important; }
+        .gov-input { padding: 0.6rem !important; font-size: 0.85rem !important; }
         .badge { font-size: 0.6rem !important; padding: 2px 6px !important; }
+        /* Force all display:grid with inline styles to 1fr */
+        .m-1col { grid-template-columns: 1fr !important; }
+      }
+      @media (max-width: 480px) {
+        .dashboard-container { padding: 0.4rem !important; }
+        .glass-card { padding: 0.7rem !important; border-radius: 10px !important; }
+        h1 { font-size: 1.05rem !important; }
+        h2 { font-size: 0.95rem !important; }
+        .btn-gov { padding: 0.4rem 0.6rem !important; font-size: 0.75rem !important; }
       }
     </style>
   </head>
@@ -59,26 +37,42 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Mobile responsive: force all inline grids to single column on small screens
       function fixMobileGrids() {
-        if (window.innerWidth <= 768) {
-          document.querySelectorAll('[style]').forEach(el => {
-            const s = el.style;
-            if (s.gridTemplateColumns && s.gridTemplateColumns !== '1fr') {
-              el.dataset.desktopGrid = s.gridTemplateColumns;
-              s.gridTemplateColumns = '1fr';
-            }
-          });
-        } else {
-          document.querySelectorAll('[data-desktop-grid]').forEach(el => {
-            el.style.gridTemplateColumns = el.dataset.desktopGrid;
-            delete el.dataset.desktopGrid;
-          });
-        }
+        var isMobile = window.innerWidth <= 768;
+        document.querySelectorAll('[style]').forEach(function(el) {
+          var s = el.style;
+          // Fix grids
+          if (s.gridTemplateColumns && s.gridTemplateColumns !== '1fr' && isMobile) {
+            if (!el.dataset.dg) el.dataset.dg = s.gridTemplateColumns;
+            s.gridTemplateColumns = '1fr';
+          }
+          if (!isMobile && el.dataset.dg) {
+            s.gridTemplateColumns = el.dataset.dg;
+            delete el.dataset.dg;
+          }
+          // Fix flex gaps that overflow
+          if (isMobile && s.display === 'flex' && s.gap) {
+            s.flexWrap = 'wrap';
+          }
+          // Fix max-width on cards
+          if (isMobile && s.maxWidth && s.maxWidth !== '100%') {
+            if (!el.dataset.dmw) el.dataset.dmw = s.maxWidth;
+            s.maxWidth = '100%';
+          }
+          if (!isMobile && el.dataset.dmw) {
+            s.maxWidth = el.dataset.dmw;
+            delete el.dataset.dmw;
+          }
+          // Fix fixed padding that's too big
+          if (isMobile && s.padding) {
+            var p = parseFloat(s.padding);
+            if (p > 2) { if (!el.dataset.dp) el.dataset.dp = s.padding; s.padding = '1rem'; }
+          }
+          if (!isMobile && el.dataset.dp) { s.padding = el.dataset.dp; delete el.dataset.dp; }
+        });
       }
       window.addEventListener('resize', fixMobileGrids);
-      // Run periodically to catch React re-renders
-      setInterval(fixMobileGrids, 1000);
+      setInterval(fixMobileGrids, 500);
       // Initial run after React renders
       setTimeout(fixMobileGrids, 500);
     </script>

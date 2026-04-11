@@ -477,3 +477,5 @@ Re-optimizing dependencies because lockfile has changed
 10:01:45 AM [vite] page reload index.html
 10:01:52 AM [vite] vite.config.js changed, restarting server...
 10:01:52 AM [vite] server restarted.
+10:12:26 AM [vite] page reload index.html
+10:12:48 AM [vite] page reload index.html
