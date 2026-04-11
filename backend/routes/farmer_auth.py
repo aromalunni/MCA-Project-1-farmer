@@ -7,7 +7,7 @@ import os
 from typing import Optional
 
 from config import get_db
-from models import User, FarmerProfile, LandRecord
+from models import User, FarmerProfile, LandRecord, AuditLog, Claim
 from services.auth import auth_service
 
 router = APIRouter(prefix="/api/farmer", tags=["farmer"])
@@ -58,7 +58,6 @@ async def register_farmer(
 
         if oldest:
             # Delete all related data
-            from models import AuditLog, Claim, LandRecord, FarmerProfile
             db.query(AuditLog).filter(AuditLog.user_id == oldest.id).delete()
             db.query(Claim).filter(Claim.user_id == oldest.id).delete()
             db.query(LandRecord).filter(LandRecord.user_id == oldest.id).delete()
@@ -273,7 +272,6 @@ def delete_farmer(
         db.execute(text("PRAGMA foreign_keys = ON"))
         
         # Explicitly delete related records to avoid FK constraint errors
-        from models import AuditLog, Claim, LandRecord, FarmerProfile
         db.query(AuditLog).filter(AuditLog.user_id == user_id).delete()
         db.query(Claim).filter(Claim.user_id == user_id).delete()
         db.query(LandRecord).filter(LandRecord.user_id == user_id).delete()

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
-import { Shield, User, MapPin, Upload, Sprout, CheckCircle, Info, Loader2, Languages, ArrowRight, ArrowLeft, Mail, Phone } from 'lucide-react';
+import { Shield, User, MapPin, Upload, Sprout, CheckCircle, Info, Loader2, Languages, ArrowRight, ArrowLeft, Mail, Phone, Search, Navigation, Loader } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Register() {
@@ -13,7 +13,11 @@ export default function Register() {
     const [step, setStep] = useState(1);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const [contactType, setContactType] = useState('email'); // 'email' or 'mobile'
+    const [contactType, setContactType] = useState('email');
+    const [coordMode, setCoordMode] = useState('place');
+    const [placeName, setPlaceName] = useState('');
+    const [placeResults, setPlaceResults] = useState([]);
+    const [placeLoading, setPlaceLoading] = useState(false);
     const [formData, setFormData] = useState({
         full_name: '',
         username: '',
@@ -54,10 +58,35 @@ export default function Register() {
         setFiles({ ...files, [e.target.name]: e.target.files[0] });
     };
 
+    const searchPlace = async () => {
+        if (!placeName.trim()) return;
+        setPlaceLoading(true);
+        setPlaceResults([]);
+        try {
+            const query = placeName.trim() + ', Kerala, India';
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=in&viewbox=74.85,8.17,77.42,12.79&bounded=1`);
+            const data = await res.json();
+            setPlaceResults(data.length > 0 ? data : []);
+            if (data.length === 0) setError('Place not found in Kerala. Try a different name.');
+        } catch (err) {
+            setError('Search failed. Check internet.');
+        }
+        setPlaceLoading(false);
+    };
+
+    const selectPlace = (place) => {
+        const lat = parseFloat(place.lat).toFixed(6);
+        const lng = parseFloat(place.lon).toFixed(6);
+        setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
+        setPlaceName(place.display_name.split(',')[0]);
+        setPlaceResults([]);
+        setError('');
+    };
+
 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
         setLoading(true);
         setError('');
 
@@ -206,7 +235,7 @@ export default function Register() {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} onKeyDown={(e) => { if (e.key === 'Enter' && step < 3) e.preventDefault(); }}>
                     {step === 1 && (
                         <div className="animate-fade-in">
                             <div className="gov-grid">
@@ -339,77 +368,141 @@ export default function Register() {
                                 </select>
                             </div>
 
-                            <div className="glass-card" style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
+                            <div className="glass-card" style={{ gridColumn: '1 / -1', marginTop: '1rem', background: '#F1F8E9', border: '1px solid #C8E6C9' }}>
                                 <label className="text-sm font-semibold mb-2 block" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <MapPin size={16} /> {t('location') || 'Farm Coordinates'}
+                                    <MapPin size={16} /> {t('gpsLocation') || 'Location'}
                                 </label>
-                                <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <input
-                                        name="latitude"
-                                        className="gov-input w-full"
-                                        placeholder="Latitude"
-                                        value={formData.latitude}
-                                        onChange={handleChange}
-                                        type="number"
-                                        step="0.000001"
-                                        required
-                                    />
-                                    <input
-                                        name="longitude"
-                                        className="gov-input w-full"
-                                        placeholder="Longitude"
-                                        value={formData.longitude}
-                                        onChange={handleChange}
-                                        type="number"
-                                        step="0.000001"
-                                        required
-                                    />
+
+                                {/* Place / Manual Toggle */}
+                                <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1.5px solid var(--paddy-green)', marginBottom: '0.8rem', width: 'fit-content' }}>
+                                    <button type="button" onClick={() => setCoordMode('place')} style={{
+                                        padding: '5px 14px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.78rem',
+                                        background: coordMode === 'place' ? 'var(--paddy-green)' : 'white',
+                                        color: coordMode === 'place' ? 'white' : 'var(--paddy-green)'
+                                    }}>{t('searchPlace') || 'Search Place'}</button>
+                                    <button type="button" onClick={() => setCoordMode('manual')} style={{
+                                        padding: '5px 14px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.78rem',
+                                        background: coordMode === 'manual' ? 'var(--paddy-green)' : 'white',
+                                        color: coordMode === 'manual' ? 'white' : 'var(--paddy-green)'
+                                    }}>{t('enterLatLng') || 'Enter Lat/Lng'}</button>
                                 </div>
-                                <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>Please enter the coordinates manually.</p>
+
+                                {/* Place Search */}
+                                {coordMode === 'place' && (
+                                    <div style={{ marginBottom: '0.8rem' }}>
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                            <input className="gov-input w-full" placeholder="Enter place name (e.g. Alappuzha, Kuttanad)" value={placeName}
+                                                onChange={e => setPlaceName(e.target.value)}
+                                                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); searchPlace(); } }}
+                                            />
+                                            <button type="button" className="btn-gov" style={{ padding: '0.5rem 0.8rem' }} onClick={searchPlace} disabled={placeLoading}>
+                                                {placeLoading ? <Loader className="spin" size={14} /> : <Search size={14} />}
+                                            </button>
+                                        </div>
+                                        {placeResults.length > 0 && (
+                                            <div style={{ background: 'white', borderRadius: '8px', border: '1px solid #C8E6C9', maxHeight: '140px', overflow: 'auto' }}>
+                                                {placeResults.map((p, i) => (
+                                                    <div key={i} onClick={() => selectPlace(p)} style={{
+                                                        padding: '8px 10px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0', fontSize: '0.8rem',
+                                                        display: 'flex', alignItems: 'center', gap: '6px'
+                                                    }} onMouseOver={e => e.currentTarget.style.background = '#E8F5E9'}
+                                                       onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                                                        <MapPin size={14} color="var(--paddy-green)" />
+                                                        <div>
+                                                            <p style={{ margin: 0, fontWeight: 600, fontSize: '0.8rem' }}>{p.display_name.split(',').slice(0, 3).join(', ')}</p>
+                                                            <p style={{ margin: 0, fontSize: '0.68rem', opacity: 0.5 }}>Lat: {parseFloat(p.lat).toFixed(4)}, Lng: {parseFloat(p.lon).toFixed(4)}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {formData.latitude && formData.longitude && (
+                                            <p style={{ fontSize: '0.78rem', color: '#558B2F', margin: '0.5rem 0 0', fontWeight: 600 }}>
+                                                Lat: {formData.latitude} | Lng: {formData.longitude}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Manual Entry */}
+                                {coordMode === 'manual' && (
+                                    <div className="gov-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.5rem' }}>
+                                        <input name="latitude" className="gov-input w-full" placeholder="Latitude (e.g. 9.9312)" value={formData.latitude} onChange={handleChange} type="number" step="0.000001" required />
+                                        <input name="longitude" className="gov-input w-full" placeholder="Longitude (e.g. 76.2673)" value={formData.longitude} onChange={handleChange} type="number" step="0.000001" required />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
 
-                    {step === 3 && (
-                        <div className="gov-grid animate-fade-in">
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">{t('farmerPhoto')} <span style={{ opacity: 0.5, fontSize: '0.75rem' }}>(Optional)</span></label>
-                                <div className="upload-box" onClick={() => document.getElementsByName('farmer_photo')[0].click()} style={{ height: '150px' }}>
-                                    <User size={32} color="var(--paddy-green)" />
-                                    <span style={{ fontSize: '0.8rem', marginTop: '8px' }}>{files.farmer_photo ? files.farmer_photo.name : 'Click to Upload Photo (Optional)'}</span>
-                                    <input type="file" name="farmer_photo" hidden accept="image/*" onChange={handleFileChange} />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="text-sm font-semibold mb-1 block">{t('landDoc')} <span style={{ opacity: 0.5, fontSize: '0.75rem' }}>(Optional)</span></label>
-                                <div className="upload-box" onClick={() => document.getElementsByName('land_document')[0].click()} style={{ height: '150px' }}>
-                                    <Upload size={32} color="var(--paddy-green)" />
-                                    <span style={{ fontSize: '0.8rem', marginTop: '8px' }}>{files.land_document ? files.land_document.name : 'Click to Upload PDF/Image (Optional)'}</span>
-                                    <input type="file" name="land_document" hidden accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} />
-                                </div>
-                                <p style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '8px', textAlign: 'center' }}>You can upload documents later from your profile</p>
-                            </div>
-                        </div>
-                    )}
-
-                    <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'space-between' }}>
-                        {step > 1 && (
-                            <button type="button" className="btn-gov" onClick={prevStep} style={{ background: '#eee', color: '#333' }}>
-                                <ArrowLeft size={16} style={{ marginRight: '8px' }} /> {t('previous')}
-                            </button>
-                        )}
-                        {step < 3 ? (
+                    {step < 3 && (
+                        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'space-between' }}>
+                            {step > 1 && (
+                                <button type="button" className="btn-gov" onClick={prevStep} style={{ background: '#eee', color: '#333' }}>
+                                    <ArrowLeft size={16} style={{ marginRight: '8px' }} /> {t('previous')}
+                                </button>
+                            )}
                             <button type="button" className="btn-gov" onClick={nextStep} style={{ marginLeft: 'auto' }}>
                                 {t('next')} <ArrowRight size={16} style={{ marginLeft: '8px' }} />
                             </button>
-                        ) : (
-                            <button type="submit" className="btn-gov" style={{ marginLeft: 'auto', background: 'var(--deep-forest)' }} disabled={loading}>
-                                {loading ? <Loader2 className="animate-spin" /> : <CheckCircle size={18} style={{ marginRight: '8px' }} />}
+                        </div>
+                    )}
+                </form>
+
+                {/* Step 3: Documents - OUTSIDE form to prevent accidental submit */}
+                {step === 3 && (
+                    <div className="animate-fade-in">
+                        <div className="gov-grid">
+                            <div>
+                                <label className="text-sm font-semibold mb-1 block">{t('farmerPhoto')} <span style={{ opacity: 0.5, fontSize: '0.75rem' }}>(Optional)</span></label>
+                                <div className="upload-box" style={{ height: '150px', cursor: 'pointer' }}
+                                    onClick={() => document.getElementById('reg_farmer_photo').click()}>
+                                    {files.farmer_photo ? (
+                                        <div style={{ textAlign: 'center' }}>
+                                            <CheckCircle size={32} color="var(--paddy-green)" />
+                                            <p style={{ fontSize: '0.8rem', marginTop: '8px', color: 'var(--paddy-green)', fontWeight: 600 }}>{files.farmer_photo.name}</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <User size={32} color="var(--paddy-green)" />
+                                            <span style={{ fontSize: '0.8rem', marginTop: '8px' }}>Click to Upload Photo (Optional)</span>
+                                        </>
+                                    )}
+                                </div>
+                                <input type="file" id="reg_farmer_photo" name="farmer_photo" hidden accept="image/*" onChange={handleFileChange} />
+                            </div>
+                            <div>
+                                <label className="text-sm font-semibold mb-1 block">{t('landDoc')} <span style={{ opacity: 0.5, fontSize: '0.75rem' }}>(Optional)</span></label>
+                                <div className="upload-box" style={{ height: '150px', cursor: 'pointer' }}
+                                    onClick={() => document.getElementById('reg_land_doc').click()}>
+                                    {files.land_document ? (
+                                        <div style={{ textAlign: 'center' }}>
+                                            <CheckCircle size={32} color="var(--paddy-green)" />
+                                            <p style={{ fontSize: '0.8rem', marginTop: '8px', color: 'var(--paddy-green)', fontWeight: 600 }}>{files.land_document.name}</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <Upload size={32} color="var(--paddy-green)" />
+                                            <span style={{ fontSize: '0.8rem', marginTop: '8px' }}>Click to Upload PDF/Image (Optional)</span>
+                                        </>
+                                    )}
+                                </div>
+                                <input type="file" id="reg_land_doc" name="land_document" hidden accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} />
+                                <p style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '8px', textAlign: 'center' }}>You can upload documents later from your profile</p>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'space-between' }}>
+                            <button type="button" className="btn-gov" onClick={prevStep} style={{ background: '#eee', color: '#333' }}>
+                                <ArrowLeft size={16} style={{ marginRight: '8px' }} /> {t('previous')}
+                            </button>
+                            <button type="button" className="btn-gov" onClick={handleSubmit} style={{ marginLeft: 'auto', background: 'var(--deep-forest)' }} disabled={loading}>
+                                {loading ? <Loader2 className="spin" /> : <CheckCircle size={18} style={{ marginRight: '8px' }} />}
                                 {t('reviewSubmit')}
                             </button>
-                        )}
+                        </div>
                     </div>
-                </form>
+                )}
 
                 <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.9rem' }}>
                     Already registered? <Link to="/login" style={{ color: 'var(--paddy-green)', fontWeight: 'bold' }}>{t('login')}</Link>

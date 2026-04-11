@@ -482,3 +482,10 @@ Re-optimizing dependencies because lockfile has changed
 10:18:19 AM [vite] page reload index.html
 10:18:41 AM [vite] page reload index.html
 10:33:54 AM [vite] page reload index.html
+5:26:15 PM [vite] hmr update /src/pages/Register.jsx
+5:26:23 PM [vite] hmr update /src/pages/Register.jsx
+5:26:36 PM [vite] hmr update /src/pages/Register.jsx
+5:27:05 PM [vite] hmr update /src/pages/Register.jsx
+5:27:29 PM [vite] hmr update /src/pages/Register.jsx
+5:50:54 PM [vite] hmr update /src/pages/Register.jsx
+5:51:10 PM [vite] hmr update /src/pages/Register.jsx
