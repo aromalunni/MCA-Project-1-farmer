@@ -322,21 +322,21 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                                 </p>
                                 {profile?.farmer_profile?.photo_url ? (
                                     <div>
-                                        <img
-                                            src={profile.farmer_profile.photo_url}
-                                            alt="Farmer"
-                                            style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }}
-                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
-                                        />
-                                        <p style={{ display: 'none', fontSize: '0.8rem', color: '#888', textAlign: 'center' }}>Photo not available on server</p>
-                                        <a href={profile.farmer_profile.photo_url} target="_blank" rel="noopener noreferrer"
-                                            style={{ fontSize: '0.78rem', color: 'var(--paddy-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <ExternalLink size={12} /> View Full Size
-                                        </a>
+                                        <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', background: '#eee' }}>
+                                            <img
+                                                src={profile.farmer_profile.photo_url}
+                                                alt="Farmer Photo"
+                                                style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.parentElement.innerHTML = '<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p style="margin:8px 0 0;font-size:0.8rem">Photo not available (server restarted)</p></div>';
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.4 }}>
-                                        <User size={40} />
+                                    <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>
+                                        <User size={48} />
                                         <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No photo uploaded</p>
                                     </div>
                                 )}
@@ -349,18 +349,32 @@ export default function Profile({ user, setUser }) { // Updated destructuring
                                 </p>
                                 {profile?.farmer_profile?.ownership_proof_url ? (
                                     <div>
-                                        <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1.5rem', textAlign: 'center', marginBottom: '0.5rem' }}>
-                                            <FileText size={40} color="#1565C0" />
-                                            <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0', fontWeight: 600, color: '#1565C0' }}>Document Uploaded</p>
-                                        </div>
-                                        <a href={profile.farmer_profile.ownership_proof_url} target="_blank" rel="noopener noreferrer"
-                                            style={{ fontSize: '0.78rem', color: '#1565C0', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <ExternalLink size={12} /> View / Download
-                                        </a>
+                                        {profile.farmer_profile.ownership_proof_url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                            <div style={{ borderRadius: '10px', overflow: 'hidden', background: '#eee' }}>
+                                                <img
+                                                    src={profile.farmer_profile.ownership_proof_url}
+                                                    alt="Land Document"
+                                                    style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        e.target.parentElement.innerHTML = '<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888;background:#E3F2FD"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p style="margin:8px 0 0;font-size:0.8rem">Document not available (server restarted)</p></div>';
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div style={{ background: '#E3F2FD', borderRadius: '10px', padding: '2rem', textAlign: 'center', height: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                                <FileText size={48} color="#1565C0" />
+                                                <p style={{ fontSize: '0.85rem', margin: '0.5rem 0 0', fontWeight: 600, color: '#1565C0' }}>PDF Document</p>
+                                                <a href={profile.farmer_profile.ownership_proof_url} target="_blank" rel="noopener noreferrer"
+                                                    style={{ fontSize: '0.8rem', color: '#1565C0', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <ExternalLink size={12} /> Open PDF
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.4 }}>
-                                        <FileText size={40} />
+                                    <div style={{ textAlign: 'center', padding: '2.5rem', opacity: 0.4, background: '#f0f0f0', borderRadius: '10px' }}>
+                                        <FileText size={48} />
                                         <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0' }}>No document uploaded</p>
                                     </div>
                                 )}
