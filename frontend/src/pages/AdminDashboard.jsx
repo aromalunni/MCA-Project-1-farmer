@@ -731,6 +731,18 @@ export default function AdminDashboard({ user }) {
                             <button onClick={() => setSelectedClaim(null)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}><X size={24} /></button>
                         </div>
 
+                        {/* Damage Photo */}
+                        {selectedClaim.image_url && (
+                            <div style={{ marginBottom: '1.5rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee' }}>
+                                <img
+                                    src={selectedClaim.image_url}
+                                    alt="Crop Damage"
+                                    style={{ width: '100%', height: '220px', objectFit: 'cover', display: 'block' }}
+                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                />
+                            </div>
+                        )}
+
                         {/* Claim Details */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
                             <div>
@@ -742,15 +754,19 @@ export default function AdminDashboard({ user }) {
                                 <p style={{ fontWeight: 'bold' }}>{selectedClaim.farmer_name}</p>
                             </div>
                             <div>
-                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Survey Number</p>
-                                <p style={{ fontWeight: 'bold' }}>#{selectedClaim.land_survey}</p>
+                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Damage Type</p>
+                                <p style={{ fontWeight: 'bold' }}>{selectedClaim.damage_type || 'General'}</p>
                             </div>
                             <div>
                                 <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Damage Percentage</p>
                                 <p style={{ fontWeight: 'bold', color: selectedClaim.damage_percentage > 50 ? '#C62828' : '#FF9800', fontSize: '1.2rem' }}>{selectedClaim.damage_percentage}%</p>
                             </div>
                             <div>
-                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Calculated Amount</p>
+                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Sum Insured</p>
+                                <p style={{ fontWeight: 'bold' }}>₹{selectedClaim.sum_insured?.toLocaleString()}</p>
+                            </div>
+                            <div>
+                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Claim Amount</p>
                                 <p style={{ fontWeight: 'bold', color: 'var(--paddy-green)', fontSize: '1.2rem' }}>₹{selectedClaim.claim_amount?.toLocaleString()}</p>
                             </div>
                             <div>
@@ -760,6 +776,10 @@ export default function AdminDashboard({ user }) {
                                     color: getStatusColor(selectedClaim.claim_status),
                                     padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase'
                                 }}>{selectedClaim.claim_status}</span>
+                            </div>
+                            <div>
+                                <p style={{ opacity: 0.6, fontSize: '0.8rem', marginBottom: '4px' }}>Date</p>
+                                <p style={{ fontWeight: 'bold' }}>{selectedClaim.created_at ? new Date(selectedClaim.created_at).toLocaleDateString('en-IN') : 'N/A'}</p>
                             </div>
                         </div>
 
