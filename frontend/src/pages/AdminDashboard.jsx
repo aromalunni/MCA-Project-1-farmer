@@ -947,20 +947,30 @@ export default function AdminDashboard({ user }) {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
                                     <p style={{ fontSize: '0.85rem', marginBottom: '8px', fontWeight: 600 }}>Farmer Photo</p>
-                                    {selectedFarmer.photo_url ? (
-                                        <img src={`http://localhost:8000${selectedFarmer.photo_url}`} alt="Farmer" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '180px', border: '1px solid #eee' }} />
+                                    {selectedFarmer.photo_data ? (
+                                        <img src={selectedFarmer.photo_data} alt="Farmer" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '180px', border: '1px solid #eee' }} />
+                                    ) : selectedFarmer.photo_url ? (
+                                        <div style={{ padding: '1.5rem', background: '#FFF8E1', borderRadius: '8px', textAlign: 'center', height: '180px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                            <p style={{ fontWeight: 600, color: '#E65100', margin: '0 0 4px' }}>Photo Uploaded</p>
+                                            <p style={{ fontSize: '0.75rem', opacity: 0.6, margin: 0 }}>{selectedFarmer.photo_url}</p>
+                                        </div>
                                     ) : (
                                         <div style={{ padding: '2rem', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center', fontSize: '0.8rem', opacity: 0.6, height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Photo</div>
                                     )}
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '0.85rem', marginBottom: '8px', fontWeight: 600 }}>Land Document</p>
-                                    {selectedFarmer.document_url ? (
-                                        selectedFarmer.document_url.endsWith('.pdf') ? (
-                                            <a href={`http://localhost:8000${selectedFarmer.document_url}`} target="_blank" rel="noreferrer" className="btn-gov" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', textDecoration: 'none' }}>📄 View PDF</a>
+                                    {selectedFarmer.document_data ? (
+                                        selectedFarmer.document_data.startsWith('data:image') ? (
+                                            <img src={selectedFarmer.document_data} alt="Land Doc" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '180px', border: '1px solid #eee' }} />
                                         ) : (
-                                            <img src={`http://localhost:8000${selectedFarmer.document_url}`} alt="Land Doc" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', height: '180px', border: '1px solid #eee' }} />
+                                            <iframe src={selectedFarmer.document_data} style={{ width: '100%', height: '180px', border: '1px solid #eee', borderRadius: '8px' }} title="Document" />
                                         )
+                                    ) : selectedFarmer.document_url ? (
+                                        <div style={{ padding: '1.5rem', background: '#E3F2FD', borderRadius: '8px', textAlign: 'center', height: '180px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                            <p style={{ fontWeight: 600, color: '#1565C0', margin: '0 0 4px' }}>Document Uploaded</p>
+                                            <p style={{ fontSize: '0.75rem', opacity: 0.6, margin: 0 }}>{selectedFarmer.document_url}</p>
+                                        </div>
                                     ) : (
                                         <div style={{ padding: '2rem', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center', fontSize: '0.8rem', opacity: 0.6, height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Document</div>
                                     )}

@@ -224,6 +224,8 @@ def get_all_farmers(
             "verification_status": profile.verification_status if profile else "unknown",
             "photo_url": profile.photo_url if profile else None,
             "document_url": profile.ownership_proof_url if profile else None,
+            "photo_data": profile.photo_data if profile else None,
+            "document_data": profile.document_data if profile else None,
             "created_at": f.created_at
         })
     return result
