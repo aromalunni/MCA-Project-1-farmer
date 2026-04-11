@@ -471,3 +471,9 @@
 7:38:33 PM [vite] hmr update /src/context/LanguageContext.jsx
 7:38:33 PM [vite] hmr invalidate /src/context/LanguageContext.jsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
 7:38:33 PM [vite] page reload src/context/LanguageContext.jsx
+10:01:17 AM [vite] vite.config.js changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+10:01:17 AM [vite] server restarted.
+10:01:45 AM [vite] page reload index.html
+10:01:52 AM [vite] vite.config.js changed, restarting server...
+10:01:52 AM [vite] server restarted.
