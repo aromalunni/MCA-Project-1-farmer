@@ -4,3 +4,51 @@ INFO:     Started reloader process [44443] using StatReload
 INFO:     Started server process [44446]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+✅ Database initialized successfully
+INFO:     127.0.0.1:50511 - "OPTIONS /api/claims/all HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50513 - "OPTIONS /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "OPTIONS /api/claims/all HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50517 - "OPTIONS /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50517 - "GET /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "GET /api/claims/stats/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50511 - "GET /api/claims/all HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50513 - "GET /api/claims/all HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50513 - "OPTIONS /api/farmer/all?t=1775911557934 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50511 - "OPTIONS /api/farmer/all?t=1775911557934 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50513 - "GET /api/farmer/all?t=1775911557934 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "GET /api/farmer/all?t=1775911557934 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "OPTIONS /api/admin/rates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50513 - "OPTIONS /api/admin/rates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50516 - "GET /api/admin/rates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50511 - "GET /api/admin/rates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50931 - "POST /api/farmer/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50999 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50999 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50999 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51001 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51062 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51062 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51062 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51064 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51064 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51062 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51062 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51064 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51231 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51233 - "POST /api/images/upload-file HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'routes/images.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [44446]
+INFO:     Started server process [47565]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'routes/images.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [47565]
+INFO:     Started server process [47672]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

@@ -14,8 +14,11 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/images", tags=["images"])
 
+from fastapi import Request
+
 @router.post("/upload-file")
 async def upload_image_file(
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user)
 ):
@@ -50,9 +53,8 @@ async def upload_image_file(
             detail=f"Could not save file: {str(e)}"
         )
 
-    # Use relative URL so it works on any host
-    from fastapi import Request
-    base_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:8000")
+    # Use request's base URL so it works on any host
+    base_url = str(request.base_url).rstrip('/')
     return {"url": f"{base_url}/static/uploads/{unique_filename}", "filename": unique_filename}
 
 class AnalyzeRequest(BaseModel):
